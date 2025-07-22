@@ -247,7 +247,7 @@ export default function Dashboard() {
             Find Your Perfect Job
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
-            Discover remote, hybrid, and on-site opportunities matched to your skills. Powered by AI. Curated for you.
+            Discover remote, hybrid, and on-site opportunities matched to your skills. Powered by AI. Curated for Mia.
           </p>
           <div className="flex justify-center gap-4 mb-8">
             <FeatureCard icon={<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1' /></svg>} label="Smart Matching" />
