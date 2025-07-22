@@ -222,14 +222,11 @@ export default function Dashboard() {
         {/* Header */}
         <section className="mb-12 text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">
-            Find Your Perfect Python/Django Job
+            Find Your Perfect Job
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
             Discover remote, hybrid, and on-site opportunities matched to your skills. Powered by AI. Curated for you.
           </p>
-          <div className="flex justify-center mb-2">
-            <img src="/images/my-notion-face-portrait.png" alt="myJobFinder.ai logo" className="w-28 h-28 md:w-36 md:h-36 object-contain" />
-          </div>
         </section>
 
         {/* Stats */}
