@@ -19,7 +19,7 @@ function JobCard({ job, onClick }: JobCardProps) {
   
   return (
     <div 
-      className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors cursor-pointer"
+      className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors cursor-pointer relative"
       onClick={() => onClick?.(job)}
     >
       <div className="flex items-start justify-between mb-3">
@@ -29,15 +29,26 @@ function JobCard({ job, onClick }: JobCardProps) {
           </h3>
           <p className="text-sm text-gray-500 mt-1">{job.company.name}</p>
         </div>
-        {score > 0 && (
-          <div className={`text-sm font-medium px-2 py-1 rounded ${
-            score >= 70 ? 'bg-green-100 text-green-700' : 
-            score >= 50 ? 'bg-blue-100 text-blue-700' : 
-            'bg-gray-100 text-gray-600'
-          }`}>
-            {Math.round(score)}%
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {score > 0 && (
+            <div className={`text-sm font-medium px-2 py-1 rounded ${
+              score >= 70 ? 'bg-green-100 text-green-700' : 
+              score >= 50 ? 'bg-blue-100 text-blue-700' : 
+              'bg-gray-100 text-gray-600'
+            }`}>
+              {Math.round(score)}%
+            </div>
+          )}
+          <a
+            href={job.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
+            onClick={e => e.stopPropagation()}
+          >
+            Apply
+          </a>
+        </div>
       </div>
       
       <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
