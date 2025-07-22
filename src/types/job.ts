@@ -78,6 +78,7 @@ export interface JobFilters {
   location_type?: string;
   sort?: 'score' | 'date' | 'company';
   page?: number;
+  page_size?: number;
 }
 
 export interface JobListResponse {

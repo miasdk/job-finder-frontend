@@ -35,21 +35,15 @@ function JobCard({ job }: JobCardProps) {
               {Math.round(score)}% match
             </div>
           )}
-          {job.source_url ? (
-            <a 
-              href={job.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Apply
-            </a>
-          ) : (
-            <span className="px-3 py-1 bg-gray-400 text-white text-sm rounded cursor-not-allowed">
-              No Link
-            </span>
-          )}
+          <a 
+            href={job.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Apply
+          </a>
         </div>
       </div>
       
@@ -96,11 +90,68 @@ function JobCard({ job }: JobCardProps) {
   );
 }
 
+function JobModal({ job, onClose }: { job: Job | null; onClose: () => void }) {
+  if (!job) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={onClose}>
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-lg w-full p-8 relative"
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          &times;
+        </button>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-2">{job.title}</h2>
+        <div className="text-gray-600 mb-1">{job.company.name}</div>
+        <div className="text-sm text-gray-500 mb-4">{job.location} &bull; {job.location_type}</div>
+        <div className="mb-4">
+          <span className="font-medium text-gray-700">Description:</span>
+          <p className="text-gray-700 mt-1 whitespace-pre-line">{job.description}</p>
+        </div>
+        {job.required_skills && job.required_skills.length > 0 && (
+          <div className="mb-4">
+            <span className="font-medium text-gray-700">Skills:</span>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {job.required_skills.map(skill => (
+                <span key={skill} className="px-2 py-1 text-xs rounded border bg-gray-50 text-gray-600 border-gray-200">{skill}</span>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="mb-4 text-sm text-gray-600">
+          <div><span className="font-medium">Experience:</span> {job.experience_level}</div>
+          {job.salary_min && (
+            <div><span className="font-medium">Salary:</span> {formatSalaryRange(job.salary_min, job.salary_max)}</div>
+          )}
+          <div><span className="font-medium">Employment:</span> {job.employment_type}</div>
+          <div><span className="font-medium">Posted:</span> {formatRelativeTime(job.posted_date)}</div>
+        </div>
+        <a
+          href={job.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full text-center px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors mt-4"
+        >
+          Apply
+        </a>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const JOBS_PER_PAGE = 8;
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -108,12 +159,13 @@ export default function Dashboard() {
         console.log('Loading data from API...');
         const [dashboardStats, jobsResponse] = await Promise.all([
           api.getDashboardStats(),
-          api.getJobs({ sort: 'score' })
+          api.getJobs({ sort: 'score', page, page_size: JOBS_PER_PAGE })
         ]);
         
         console.log('Data loaded successfully');
         setStats(dashboardStats);
         setJobs(jobsResponse.results);
+        setTotalJobs(jobsResponse.count || 0);
         setError(null);
       } catch (error) {
         console.error('Failed to load data:', error);
@@ -124,7 +176,18 @@ export default function Dashboard() {
     }
 
     loadData();
-  }, []);
+  }, [page]);
+
+  // Modal close on Esc
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setSelectedJob(null);
+    }
+    if (selectedJob) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [selectedJob]);
 
   if (loading) {
     return (
@@ -161,7 +224,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-3xl font-light text-gray-900 mb-2">
-            Hello, Mia Elena!
+            Hello, Mia 👋!
           </h1>
           <p className="text-gray-600">
             {stats?.total_jobs || 0} opportunities found, {stats?.recommended_jobs || 0} recommended for you
@@ -171,16 +234,25 @@ export default function Dashboard() {
         {/* Stats */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="text-2xl font-light text-gray-900">{stats.total_jobs}</div>
+            <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-col items-center">
+              <div className="text-2xl font-light text-gray-900 flex items-center gap-2">
+                <span className="material-icons text-blue-500">work_outline</span>
+                {stats.total_jobs}
+              </div>
               <div className="text-sm text-gray-500 mt-1">Total Jobs</div>
             </div>
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="text-2xl font-light text-gray-900">{stats.recommended_jobs}</div>
+            <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-col items-center">
+              <div className="text-2xl font-light text-gray-900 flex items-center gap-2">
+                <span className="material-icons text-green-500">star_outline</span>
+                {stats.recommended_jobs}
+              </div>
               <div className="text-sm text-gray-500 mt-1">Recommended</div>
             </div>
-            <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <div className="text-2xl font-light text-gray-900">{stats.meets_minimum}</div>
+            <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-col items-center">
+              <div className="text-2xl font-light text-gray-900 flex items-center gap-2">
+                <span className="material-icons text-purple-500">check_circle_outline</span>
+                {stats.meets_minimum}
+              </div>
               <div className="text-sm text-gray-500 mt-1">Meet Requirements</div>
             </div>
           </div>
@@ -224,19 +296,33 @@ export default function Dashboard() {
 
         {/* Jobs */}
         <div className="space-y-4">
-          {jobs.slice(0, 8).map((job) => (
-            <JobCard key={job.id} job={job} />
+          {jobs.map((job) => (
+            <div key={job.id} onClick={() => setSelectedJob(job)} className="cursor-pointer">
+              <JobCard job={job} />
+            </div>
           ))}
         </div>
 
-        {(stats?.total_jobs || 0) > 8 && (
-          <div className="text-center mt-8">
-            <a 
-              href="/jobs" 
-              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-            >
-              View All {stats?.total_jobs || jobs.length} Jobs
-            </a>
+        {/* Job Modal */}
+        <JobModal job={selectedJob} onClose={() => setSelectedJob(null)} />
+
+        {/* Pagination Controls */}
+        {totalJobs > JOBS_PER_PAGE && (
+          <div className="flex justify-center mt-8 space-x-2">
+            {Array.from({ length: Math.ceil(totalJobs / JOBS_PER_PAGE) }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                className={`px-3 py-1 rounded border transition-colors duration-150 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 ${
+                  page === i + 1
+                    ? 'bg-gray-900 text-white border-gray-900'
+                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100'
+                }`}
+                aria-current={page === i + 1 ? 'page' : undefined}
+              >
+                {i + 1}
+              </button>
+            ))}
           </div>
         )}
 
