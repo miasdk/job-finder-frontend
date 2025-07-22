@@ -86,7 +86,7 @@ export default function ProfilePage() {
                   </h3>
                   <div className="mt-2 text-sm text-blue-700">
                     <p>
-                      Click "Edit Preferences" to customize your skills, salary range, location preferences, 
+                      Click &ldquo;Edit Preferences&rdquo; to customize your skills, salary range, location preferences, 
                       and automation settings. Your job scraping and scoring will automatically update to match your preferences!
                     </p>
                   </div>
