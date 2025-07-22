@@ -86,7 +86,7 @@ export function highlightText(text: string, query: string): string {
   return text.replace(regex, '<mark class="bg-yellow-200">$1</mark>');
 }
 
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {

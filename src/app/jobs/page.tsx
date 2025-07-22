@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { Job, JobFilters } from '@/types/job';
 import { 
@@ -178,11 +178,7 @@ export default function JobsPage() {
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<JobFilters>({});
 
-  useEffect(() => {
-    loadJobs();
-  }, [filters, search]);
-
-  async function loadJobs() {
+  const loadJobs = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.getJobs({
@@ -198,7 +194,11 @@ export default function JobsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [filters, search]);
+
+  useEffect(() => {
+    loadJobs();
+  }, [loadJobs]);
 
   if (error) {
     return (

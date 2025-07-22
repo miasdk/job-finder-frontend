@@ -6,8 +6,7 @@ import { Job, DashboardStats } from '@/types/job';
 import { 
   formatSalaryRange, 
   formatRelativeTime,
-  USER_SKILLS,
-  calculateMatchPercentage
+  USER_SKILLS
 } from '@/lib/utils';
 
 interface JobCardProps {
@@ -15,7 +14,6 @@ interface JobCardProps {
 }
 
 function JobCard({ job }: JobCardProps) {
-  const matchPercentage = calculateMatchPercentage(job.required_skills, USER_SKILLS);
   const score = job.score?.total_score || 0;
   
   return (

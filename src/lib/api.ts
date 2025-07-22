@@ -70,13 +70,13 @@ export const mockApi = {
       total_jobs: 127,
       recommended_jobs: 23,
       meets_minimum: 45,
+      last_scrape_date: null,
+      last_email_date: null,
       top_jobs: [],
       recent_jobs: [],
-      company_stats: [],
-      email_digests: [],
     }),
 
-  getJobs: (filters: JobFilters = {}): Promise<JobListResponse> => {
+  getJobs: (): Promise<JobListResponse> => {
     const mockJobs: Job[] = [
       {
         id: 1,
