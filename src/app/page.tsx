@@ -9,14 +9,25 @@ import {
   USER_SKILLS
 } from '@/lib/utils';
 
+// Helper for 'New' badge
+function isNewJob(posted_date: string) {
+  const posted = new Date(posted_date);
+  const now = new Date();
+  return (now.getTime() - posted.getTime()) < 24 * 60 * 60 * 1000;
+}
+
 interface JobCardProps {
   job: Job;
 }
 
 function JobCard({ job }: JobCardProps) {
   const score = job.score?.total_score || 0;
+  const isNew = isNewJob(job.posted_date);
   return (
-    <div className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-all duration-200 flex flex-col justify-between min-h-[180px]">
+    <div className="group relative bg-white border-l-4 border-blue-200 border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[180px] animate-fade-in">
+      {isNew && (
+        <span className="absolute top-4 left-4 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">New</span>
+      )}
       <div>
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
@@ -84,6 +95,16 @@ function JobCard({ job }: JobCardProps) {
           {formatRelativeTime(job.posted_date)}
         </div>
       </div>
+    </div>
+  );
+}
+
+// Minimalist feature cards with icons (SVGs)
+function FeatureCard({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="bg-white/80 rounded-xl px-6 py-4 shadow flex flex-col items-center border border-gray-100">
+      <div className="w-8 h-8 mb-2 flex items-center justify-center text-blue-500">{icon}</div>
+      <span className="text-sm text-gray-700 font-medium">{label}</span>
     </div>
   );
 }
@@ -220,14 +241,22 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
-        <section className="mb-12 text-center">
+        <section className="relative mb-12 text-center animate-fade-in">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 rounded-3xl blur-2xl opacity-60" />
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">
             Find Your Perfect Job
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
             Discover remote, hybrid, and on-site opportunities matched to your skills. Powered by AI. Curated for you.
           </p>
+          <div className="flex justify-center gap-4 mb-8">
+            <FeatureCard icon={<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1' /></svg>} label="Smart Matching" />
+            <FeatureCard icon={<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'><circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='2' /><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 12h8' /></svg>} label="Remote & Hybrid" />
+            <FeatureCard icon={<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'><rect x='4' y='4' width='16' height='16' rx='4' stroke='currentColor' strokeWidth='2' /></svg>} label="Curated Results" />
+          </div>
         </section>
+        {/* Divider */}
+        <div className="w-full h-0.5 bg-gray-200 rounded-full mb-10" />
 
         {/* Stats */}
 
