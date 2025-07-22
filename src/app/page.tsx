@@ -26,7 +26,7 @@ function JobCard({ job }: JobCardProps) {
   return (
     <div className="group relative bg-white border-l-4 border-blue-200 border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[180px] animate-fade-in">
       {isNew && (
-        <span className="absolute top-4 right-4 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-medium shadow">New</span>
+        <span className="absolute top-2 right-2 bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full font-medium shadow">New</span>
       )}
       <div>
         <div className="flex items-start justify-between mb-3">
