@@ -249,11 +249,6 @@ export default function Dashboard() {
           <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
             Discover remote, hybrid, and on-site opportunities matched to your skills. Powered by AI. Curated for Mia.
           </p>
-          {stats && (
-            <div className="mb-4 text-gray-700 text-base font-medium">
-              {stats.total_jobs} job opportunities found
-            </div>
-          )}
           <div className="flex justify-center gap-4 mb-8">
             <FeatureCard icon={<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1m4 0h-1v4h-1' /></svg>} label="Smart Matching" />
             <FeatureCard icon={<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'><circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='2' /><path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M8 12h8' /></svg>} label="Remote & Hybrid" />
@@ -262,8 +257,12 @@ export default function Dashboard() {
         </section>
         {/* Divider */}
         <div className="w-full h-0.5 bg-gray-200 rounded-full mb-10" />
-
-        {/* Stats */}
+        {/* Total Jobs Found */}
+        {stats && (
+          <div className="mb-6 text-gray-700 text-base font-medium text-center">
+            {stats.total_jobs} job opportunities found
+          </div>
+        )}
 
         {/* Automation Status */}
         {stats && (
