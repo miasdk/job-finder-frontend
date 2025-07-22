@@ -22,7 +22,7 @@ export default function Footer() {
               Portfolio
             </a>
             <a 
-              href="https://github.com" 
+              href="https://github.com/miasdk/job-finder-backend" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
