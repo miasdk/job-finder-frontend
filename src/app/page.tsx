@@ -93,7 +93,7 @@ function JobCard({ job }: JobCardProps) {
 function JobModal({ job, onClose }: { job: Job | null; onClose: () => void }) {
   if (!job) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm" onClick={onClose}>
       <div
         className="bg-white rounded-lg shadow-xl max-w-lg w-full p-8 relative"
         onClick={e => e.stopPropagation()}
@@ -232,31 +232,6 @@ export default function Dashboard() {
         </div>
 
         {/* Stats */}
-        {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-col items-center">
-              <div className="text-2xl font-light text-gray-900 flex items-center gap-2">
-                <span className="material-icons text-blue-500">work_outline</span>
-                {stats.total_jobs}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Total Jobs</div>
-            </div>
-            <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-col items-center">
-              <div className="text-2xl font-light text-gray-900 flex items-center gap-2">
-                <span className="material-icons text-green-500">star_outline</span>
-                {stats.recommended_jobs}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Recommended</div>
-            </div>
-            <div className="bg-white rounded-lg p-6 border border-gray-200 flex flex-col items-center">
-              <div className="text-2xl font-light text-gray-900 flex items-center gap-2">
-                <span className="material-icons text-purple-500">check_circle_outline</span>
-                {stats.meets_minimum}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Meet Requirements</div>
-            </div>
-          </div>
-        )}
 
         {/* Automation Status */}
         {stats && (
