@@ -19,10 +19,10 @@ export default function Header() {
             <Image
               src="/images/my-notion-face-transparent (2).png"
               alt="myJobFinder.ai logo"
-              width={32}
-              height={32}
+              width={56}
+              height={56}
               priority
-              className="rounded-full border border-gray-200 bg-white shadow-sm"
+              className="rounded-full bg-white shadow-sm"
             />
             <span className="tracking-tight">myJobFinder.ai</span>
           </Link>

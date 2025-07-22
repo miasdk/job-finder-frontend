@@ -15,73 +15,71 @@ interface JobCardProps {
 
 function JobCard({ job }: JobCardProps) {
   const score = job.score?.total_score || 0;
-  
   return (
-    <div className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-all duration-200">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-medium text-gray-900 group-hover:text-gray-700 transition-colors">
-            {job.title}
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">{job.company.name}</p>
+    <div className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-all duration-200 flex flex-col justify-between min-h-[180px]">
+      <div>
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1">
+            <h3 className="text-lg font-medium text-gray-900 group-hover:text-gray-700 transition-colors">
+              {job.title}
+            </h3>
+            <p className="text-sm text-gray-500 mt-1">{job.company.name}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {score > 0 && (
+              <div className={`text-sm font-medium px-2 py-1 rounded ${
+                score >= 70 ? 'bg-green-100 text-green-700' : 
+                score >= 50 ? 'bg-blue-100 text-blue-700' : 
+                'bg-gray-100 text-gray-600'
+              }`}>
+                {Math.round(score)}% match
+              </div>
+            )}
+            <a 
+              href={job.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
+              onClick={e => e.stopPropagation()}
+            >
+              Apply
+            </a>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          {score > 0 && (
-            <div className={`text-sm font-medium px-2 py-1 rounded ${
-              score >= 70 ? 'bg-green-100 text-green-700' : 
-              score >= 50 ? 'bg-blue-100 text-blue-700' : 
-              'bg-gray-100 text-gray-600'
-            }`}>
-              {Math.round(score)}% match
-            </div>
+        <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+          <span>{job.location}</span>
+          <span>•</span>
+          <span className="capitalize">{job.location_type}</span>
+          {job.salary_min && (
+            <>
+              <span>•</span>
+              <span>{formatSalaryRange(job.salary_min, job.salary_max)}</span>
+            </>
           )}
-          <a 
-            href={job.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Apply
-          </a>
         </div>
-      </div>
-      
-      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-        <span>{job.location}</span>
-        <span>•</span>
-        <span className="capitalize">{job.location_type}</span>
-        {job.salary_min && (
-          <>
-            <span>•</span>
-            <span>{formatSalaryRange(job.salary_min, job.salary_max)}</span>
-          </>
+        {job.required_skills && job.required_skills.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {job.required_skills.slice(0, 4).map((skill) => (
+              <span
+                key={skill}
+                className={`px-2 py-1 text-xs rounded border ${
+                  USER_SKILLS.includes(skill)
+                    ? 'bg-blue-50 text-blue-700 border-blue-200'
+                    : 'bg-gray-50 text-gray-600 border-gray-200'
+                }`}
+              >
+                {skill}
+              </span>
+            ))}
+            {job.required_skills.length > 4 && (
+              <span className="px-2 py-1 text-xs rounded border bg-gray-50 text-gray-500 border-gray-200">
+                +{job.required_skills.length - 4}
+              </span>
+            )}
+          </div>
         )}
       </div>
-
-      {job.required_skills && job.required_skills.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {job.required_skills.slice(0, 4).map((skill) => (
-            <span
-              key={skill}
-              className={`px-2 py-1 text-xs rounded border ${
-                USER_SKILLS.includes(skill)
-                  ? 'bg-blue-50 text-blue-700 border-blue-200'
-                  : 'bg-gray-50 text-gray-600 border-gray-200'
-              }`}
-            >
-              {skill}
-            </span>
-          ))}
-          {job.required_skills.length > 4 && (
-            <span className="px-2 py-1 text-xs rounded border bg-gray-50 text-gray-500 border-gray-200">
-              +{job.required_skills.length - 4}
-            </span>
-          )}
-        </div>
-      )}
-
-      <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex justify-end items-end mt-4">
         <div className="text-xs text-gray-400">
           {formatRelativeTime(job.posted_date)}
         </div>
@@ -222,14 +220,17 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-3xl font-light text-gray-900 mb-2">
-            Hello, Mia 👋!
+        <section className="mb-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight">
+            Find Your Perfect Python/Django Job
           </h1>
-          <p className="text-gray-600">
-            {stats?.total_jobs || 0} opportunities found, {stats?.recommended_jobs || 0} recommended for you
+          <p className="text-lg md:text-xl text-gray-600 mb-4 max-w-2xl mx-auto">
+            Discover remote, hybrid, and on-site opportunities matched to your skills. Powered by AI. Curated for you.
           </p>
-        </div>
+          <div className="flex justify-center mb-2">
+            <img src="/images/my-notion-face-portrait.png" alt="myJobFinder.ai logo" className="w-28 h-28 md:w-36 md:h-36 object-contain" />
+          </div>
+        </section>
 
         {/* Stats */}
 
