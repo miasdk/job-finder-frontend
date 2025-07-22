@@ -149,14 +149,20 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
           )}
           
           <div className="flex gap-4">
-            <a 
-              href={job.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors"
-            >
-              Apply Now
-            </a>
+            {job.source_url ? (
+              <a 
+                href={job.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors"
+              >
+                Apply Now
+              </a>
+            ) : (
+              <span className="px-4 py-2 bg-gray-400 text-white rounded cursor-not-allowed">
+                No Application Link
+              </span>
+            )}
             <button 
               onClick={onClose}
               className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"

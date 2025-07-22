@@ -35,15 +35,21 @@ function JobCard({ job }: JobCardProps) {
               {Math.round(score)}% match
             </div>
           )}
-          <a 
-            href={job.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Apply
-          </a>
+          {job.source_url ? (
+            <a 
+              href={job.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Apply
+            </a>
+          ) : (
+            <span className="px-3 py-1 bg-gray-400 text-white text-sm rounded cursor-not-allowed">
+              No Link
+            </span>
+          )}
         </div>
       </div>
       
@@ -222,6 +228,17 @@ export default function Dashboard() {
             <JobCard key={job.id} job={job} />
           ))}
         </div>
+
+        {jobs.length > 8 && (
+          <div className="text-center mt-8">
+            <a 
+              href="/jobs" 
+              className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              View All {jobs.length} Jobs
+            </a>
+          </div>
+        )}
 
         {jobs.length === 0 && !loading && (
           <div className="text-center py-12">
