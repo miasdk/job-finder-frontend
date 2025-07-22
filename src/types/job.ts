@@ -86,3 +86,32 @@ export interface JobListResponse {
   previous?: string;
   results: Job[];
 }
+
+export interface UserPreferences {
+  id: number;
+  name: string;
+  email: string;
+  skills: string[];
+  experience_levels: string[];
+  min_experience_years: number;
+  max_experience_years: number;
+  preferred_locations: string[];
+  location_types: string[];
+  min_salary: number;
+  max_salary: number;
+  currency: string;
+  job_titles: string[];
+  preferred_companies: string[];
+  skills_weight: number;
+  experience_weight: number;
+  location_weight: number;
+  salary_weight: number;
+  company_weight: number;
+  email_enabled: boolean;
+  email_frequency: 'daily' | 'weekly' | 'bi_weekly';
+  email_time: string;
+  auto_scrape_enabled: boolean;
+  scrape_frequency_hours: number;
+  min_job_score_threshold: number;
+  updated_at: string;
+}

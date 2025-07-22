@@ -155,7 +155,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-3xl font-light text-gray-900 mb-2">
-            Job Dashboard
+            Hello, Mia Elena!
           </h1>
           <p className="text-gray-600">
             {stats?.total_jobs || 0} opportunities found, {stats?.recommended_jobs || 0} recommended for you

@@ -1,4 +1,4 @@
-import { Job, DashboardStats, JobFilters, JobListResponse } from '@/types/job';
+import { Job, DashboardStats, JobFilters, JobListResponse, UserPreferences } from '@/types/job';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
@@ -61,6 +61,16 @@ export const api = {
 
   getSkills: (): Promise<string[]> =>
     fetchApi('/api/skills/'),
+
+  // Preferences
+  getPreferences: (): Promise<UserPreferences> =>
+    fetchApi('/api/preferences/'),
+
+  updatePreferences: (preferences: Partial<UserPreferences>): Promise<{ success: boolean; message: string; preferences: UserPreferences }> =>
+    fetchApi('/api/preferences/update/', {
+      method: 'POST',
+      body: JSON.stringify(preferences),
+    }),
 };
 
 // Mock data for development when backend is not available
