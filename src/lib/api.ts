@@ -2,6 +2,11 @@ import { Job, DashboardStats, JobFilters, JobListResponse, UserPreferences } fro
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
+// Debug log to verify environment variable
+if (typeof window !== 'undefined') {
+  console.log('API_BASE_URL:', API_BASE_URL);
+}
+
 class ApiError extends Error {
   constructor(message: string, public status: number) {
     super(message);
