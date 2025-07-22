@@ -229,13 +229,13 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {jobs.length > 8 && (
+        {(stats?.total_jobs || 0) > 8 && (
           <div className="text-center mt-8">
             <a 
               href="/jobs" 
               className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
-              View All {jobs.length} Jobs
+              View All {stats?.total_jobs || jobs.length} Jobs
             </a>
           </div>
         )}

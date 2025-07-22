@@ -81,13 +81,20 @@ function JobCard({ job, onClick }: JobCardProps) {
 
 function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+    <div 
+      className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-xl">
+        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between rounded-t-lg">
           <h2 className="text-xl font-medium text-gray-900">{job.title}</h2>
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl"
+            className="text-gray-400 hover:text-gray-600 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
           >
             ×
           </button>
@@ -95,47 +102,48 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
         
         <div className="p-6">
           <div className="mb-6">
-            <h3 className="font-medium text-gray-900 mb-2">{job.company.name}</h3>
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-              <span>{job.location}</span>
-              <span>•</span>
-              <span className="capitalize">{job.location_type}</span>
-              {job.salary_min && (
-                <>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="font-medium text-gray-900 mb-1">{job.company.name}</h3>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <span>{job.location}</span>
                   <span>•</span>
-                  <span>{formatSalaryRange(job.salary_min, job.salary_max)}</span>
-                </>
-              )}
-            </div>
-            
-            {job.score && (
-              <div className="mb-4">
-                <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                  <span className="capitalize">{job.location_type}</span>
+                  {job.salary_min && (
+                    <>
+                      <span>•</span>
+                      <span>{formatSalaryRange(job.salary_min, job.salary_max)}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              {job.score && (
+                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
                   job.score.total_score >= 70 ? 'bg-green-100 text-green-700' : 
                   job.score.total_score >= 50 ? 'bg-blue-100 text-blue-700' : 
                   'bg-gray-100 text-gray-600'
                 }`}>
                   {Math.round(job.score.total_score)}% match
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           
           <div className="mb-6">
-            <h4 className="font-medium text-gray-900 mb-2">Description</h4>
-            <div className="text-gray-700 whitespace-pre-line">
-              {job.description}
+            <h4 className="font-medium text-gray-900 mb-3">Job Description</h4>
+            <div className="text-gray-700 whitespace-pre-line leading-relaxed">
+              {job.description || 'No description available.'}
             </div>
           </div>
           
           {job.required_skills && job.required_skills.length > 0 && (
             <div className="mb-6">
-              <h4 className="font-medium text-gray-900 mb-2">Required Skills</h4>
+              <h4 className="font-medium text-gray-900 mb-3">Required Skills</h4>
               <div className="flex flex-wrap gap-2">
                 {job.required_skills.map((skill) => (
                   <span
                     key={skill}
-                    className={`px-3 py-1 text-sm rounded border ${
+                    className={`px-3 py-1 text-sm rounded-full border ${
                       USER_SKILLS.includes(skill)
                         ? 'bg-blue-50 text-blue-700 border-blue-200'
                         : 'bg-gray-50 text-gray-600 border-gray-200'
@@ -148,24 +156,33 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
             </div>
           )}
           
-          <div className="flex gap-4">
-            {job.source_url ? (
+          {/* Source Information */}
+          {job.source && (
+            <div className="mb-6">
+              <div className="text-sm text-gray-500">
+                Posted via {job.source} • {formatRelativeTime(job.posted_date)}
+              </div>
+            </div>
+          )}
+          
+          <div className="flex gap-4 pt-4">
+            {job.source_url && job.source_url !== 'No URL' && !job.source_url.includes('example.com') ? (
               <a 
                 href={job.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors"
+                className="flex-1 px-4 py-2 bg-gray-900 text-white text-center rounded-lg hover:bg-gray-800 transition-colors font-medium"
               >
-                Apply Now
+                Apply Now →
               </a>
             ) : (
-              <span className="px-4 py-2 bg-gray-400 text-white rounded cursor-not-allowed">
+              <div className="flex-1 px-4 py-2 bg-gray-400 text-white text-center rounded-lg cursor-not-allowed font-medium">
                 No Application Link
-              </span>
+              </div>
             )}
             <button 
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
             >
               Close
             </button>
