@@ -443,12 +443,12 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Jobs Preview Section */}
+        {/* Jobs List Section (original list view) */}
         {jobs && jobs.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Recommended for You</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {jobs.slice(0, 3).map((job) => (
+            <div className="space-y-4">
+              {jobs.map((job) => (
                 <div key={job.id} className="cursor-pointer">
                   <JobCard job={job} />
                 </div>
