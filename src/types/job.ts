@@ -117,6 +117,7 @@ export interface JobFilters {
   min_score?: number;
   location_type?: string;
   sort?: 'score' | 'date' | 'company';
+  filter?: 'recommended' | 'meets_requirements';
   page?: number;
   page_size?: number;
 }

@@ -222,12 +222,14 @@ export default function JobsClient() {
       const urlExperienceLevel = searchParams.get('experience_level');
       const urlMinScore = searchParams.get('min_score');
       const urlSort = searchParams.get('sort');
+      const urlFilter = searchParams.get('filter');
       if (urlSearch) setSearch(urlSearch);
       const initialFilters: JobFilters = {};
       if (urlLocationType) initialFilters.location_type = urlLocationType;
       if (urlExperienceLevel) initialFilters.experience_level = urlExperienceLevel;
       if (urlMinScore) initialFilters.min_score = Number(urlMinScore);
       if (urlSort) initialFilters.sort = urlSort as 'score' | 'date' | 'company';
+      if (urlFilter) initialFilters.filter = urlFilter as 'recommended' | 'meets_requirements';
       if (Object.keys(initialFilters).length > 0) {
         setFilters(initialFilters);
       }
@@ -268,6 +270,7 @@ export default function JobsClient() {
     if (newFilters.experience_level) params.set('experience_level', newFilters.experience_level);
     if (newFilters.min_score !== undefined) params.set('min_score', String(newFilters.min_score));
     if (newFilters.sort) params.set('sort', newFilters.sort);
+    if (newFilters.filter) params.set('filter', newFilters.filter);
     window.history.replaceState(null, '', `/jobs?${params.toString()}`);
   }
 
@@ -297,6 +300,7 @@ export default function JobsClient() {
     filters.experience_level && { label: filters.experience_level, key: 'experience_level' },
     filters.min_score && { label: `Score ${filters.min_score}+`, key: 'min_score' },
     filters.sort && { label: `Sort: ${filters.sort}`, key: 'sort' },
+    filters.filter && { label: filters.filter === 'recommended' ? 'AI Recommended' : 'Meets Requirements', key: 'filter' },
   ].filter(Boolean) as { label: string; key: string }[];
 
   if (error) {
@@ -322,8 +326,58 @@ export default function JobsClient() {
           <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
             <h1 className="text-3xl font-light text-gray-900">All Jobs</h1>
           </div>
+          
+          {/* Quick Filter Buttons for AI Recommendations */}
+          <div className="mb-4 flex flex-wrap gap-3">
+            <button
+              onClick={() => {
+                setFilters({ sort: 'score' });
+                setSearch('');
+                setPage(1);
+                updateUrlParams('', { sort: 'score' });
+              }}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                !filters.filter ? 'bg-gray-900 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              All Jobs
+            </button>
+                         <button
+               onClick={() => {
+                 const newFilters: JobFilters = { filter: 'recommended', sort: 'score' };
+                 setFilters(newFilters);
+                 setSearch('');
+                 setPage(1);
+                 updateUrlParams('', newFilters);
+               }}
+               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                 filters.filter === 'recommended' ? 'bg-green-600 text-white' : 'bg-white border border-green-600 text-green-600 hover:bg-green-50'
+               }`}
+             >
+               🎯 AI Recommended
+             </button>
+             <button
+               onClick={() => {
+                 const newFilters: JobFilters = { filter: 'meets_requirements', sort: 'score' };
+                 setFilters(newFilters);
+                 setSearch('');
+                 setPage(1);
+                 updateUrlParams('', newFilters);
+               }}
+               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                 filters.filter === 'meets_requirements' ? 'bg-blue-600 text-white' : 'bg-white border border-blue-600 text-blue-600 hover:bg-blue-50'
+               }`}
+             >
+               ✅ Meets Requirements
+             </button>
+          </div>
+          
           {jobsCount > 0 && (
-            <div className="text-sm text-gray-500 mb-2">{jobsCount} jobs found</div>
+            <div className="text-sm text-gray-500 mb-2">
+              {jobsCount} jobs found
+              {filters.filter === 'recommended' && ' that AI recommends for you'}
+              {filters.filter === 'meets_requirements' && ' where you meet the requirements'}
+            </div>
           )}
           {/* Active filter chips */}
           {activeFilterChips.length > 0 && (
