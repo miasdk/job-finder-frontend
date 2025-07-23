@@ -89,6 +89,45 @@ export const mockApi = {
       last_email_date: null,
       top_jobs: [],
       recent_jobs: [],
+      skills_intelligence: {
+        top_market_skills: [
+          { skill: 'Python', count: 45 },
+          { skill: 'React', count: 38 },
+          { skill: 'JavaScript', count: 35 },
+          { skill: 'Django', count: 28 },
+          { skill: 'PostgreSQL', count: 22 }
+        ],
+        your_skills_demand: [
+          { skill: 'Python', market_demand: 45 },
+          { skill: 'Django', market_demand: 28 },
+          { skill: 'React', market_demand: 38 }
+        ],
+        recommendation: 'Focus on high-demand skills'
+      },
+      salary_intelligence: {
+        your_min: 70000,
+        your_max: 120000,
+        market_avg: 95000,
+        market_median: 92000,
+        above_market: false
+      },
+      location_intelligence: [
+        { location: 'New York', job_count: 45, avg_score: 75.5, is_preferred: true },
+        { location: 'Remote', job_count: 38, avg_score: 82.1, is_preferred: true },
+        { location: 'San Francisco', job_count: 25, avg_score: 68.3, is_preferred: false }
+      ],
+      ai_engine_status: {
+        jobs_scored_today: 15,
+        avg_match_score: 72.5,
+        high_matches: 8,
+        search_terms_used: ['Python Developer', 'Django Developer', 'Backend Developer'],
+        active_scrapers: ['JSearch API', 'Adzuna', 'RemoteOK', 'Indeed', 'Wellfound']
+      },
+      smart_company_alerts: [
+        { company: 'TechCorp', high_match_jobs: 3, avg_match: 85.2 },
+        { company: 'DataFlow Inc', high_match_jobs: 2, avg_match: 78.9 },
+        { company: 'CloudTech', high_match_jobs: 2, avg_match: 76.4 }
+      ]
     }),
 
   getJobs: (): Promise<JobListResponse> => {
