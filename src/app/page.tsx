@@ -443,53 +443,28 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Latest Jobs Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Recommended for You</h2>
-              <p className="text-gray-600 mt-1">AI-curated jobs matching your skills and preferences</p>
+        {/* Jobs Preview Section */}
+        {jobs && jobs.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Recommended for You</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {jobs.slice(0, 3).map((job) => (
+                <div key={job.id} className="cursor-pointer">
+                  <JobCard job={job} />
+                </div>
+              ))}
             </div>
-            <a href="/jobs" className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
-              View All {stats?.total_jobs} Jobs
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        {/* Jobs */}
-        <div className="space-y-4">
-          {jobs.map((job) => (
-            <div key={job.id} onClick={() => setSelectedJob(job)} className="cursor-pointer">
-              <JobCard job={job} />
-            </div>
-          ))}
-        </div>
-
-        {/* Job Modal */}
-        <JobModal job={selectedJob} onClose={() => setSelectedJob(null)} />
-
-        {/* Pagination Controls */}
-        {totalJobs > JOBS_PER_PAGE && (
-          <div className="flex justify-center mt-8 space-x-2">
-            {Array.from({ length: Math.ceil(totalJobs / JOBS_PER_PAGE) }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i + 1)}
-                className={`px-3 py-1 rounded border transition-colors duration-150 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 ${
-                  page === i + 1
-                    ? 'bg-gray-900 text-white border-gray-900'
-                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-100'
-                }`}
-                aria-current={page === i + 1 ? 'page' : undefined}
-              >
-                {i + 1}
-              </button>
-            ))}
           </div>
         )}
+        {/* Call to Action */}
+        <div className="flex justify-center mt-8">
+          <a
+            href="/jobs"
+            className="inline-block px-8 py-3 bg-gray-900 text-white text-base font-medium rounded-lg shadow hover:bg-gray-700 transition"
+          >
+            View All Jobs
+          </a>
+        </div>
 
         {jobs.length === 0 && !loading && (
           <div className="text-center py-12">
