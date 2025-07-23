@@ -3,10 +3,18 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, MapPin, Clock, DollarSign } from "lucide-react";
+
 import { api } from "@/lib/api";
 import type { Job, DashboardStats } from "@/types/job";
-import { formatSalaryRange, formatRelativeTime, USER_SKILLS } from "@/lib/utils";
+import { formatSalaryRange, formatRelativeTime, USER_SKILLS, cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Helper for 'New' badge
 function isNewJob(posted_date: string) {
@@ -38,43 +46,48 @@ function JobCard({ job, index }: JobCardProps) {
         y: -4,
         transition: { duration: 0.2, ease: "easeOut" }
       }}
-      className="group relative bg-white border border-gray-200 rounded-xl p-6 hover:border-gray-300 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden"
     >
+      <Card className="group relative hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden">
       {/* Subtle hover gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 via-transparent to-purple-50/0 group-hover:from-blue-50/30 group-hover:to-purple-50/20 transition-all duration-500 rounded-xl" />
       
-      <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          {isNew && (
-            <motion.span 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, type: "spring", stiffness: 500, damping: 30 }}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs px-3 py-1 rounded-full font-medium shadow-sm"
-            >
-              New
-            </motion.span>
-          )}
-          <div className="flex items-center gap-3 ml-auto">
-            <span className="text-xs text-gray-500 px-3 py-1 rounded-full border border-gray-200 bg-gray-50/50">
-              {job.source}
-            </span>
-            {score > 0 && (
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 400 }}
-                className={`text-xs font-medium px-3 py-1 rounded-full border ${
-                  score >= 80 ? "bg-green-50 text-green-700 border-green-200" : 
-                  score >= 60 ? "bg-blue-50 text-blue-700 border-blue-200" : 
-                  "bg-gray-50 text-gray-600 border-gray-200"
-                }`}
-                                >
-                    {Math.round(score)}% ai match
-                  </motion.div>
+        <CardContent className="p-6 relative z-10">
+          <div className="flex items-start justify-between mb-4">
+            {isNew && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 500, damping: 30 }}
+              >
+                <Badge className="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-sm">
+                  New
+                </Badge>
+              </motion.div>
             )}
+            <div className="flex items-center gap-3 ml-auto">
+              <Badge variant="secondary" className="text-xs">
+                {job.source}
+              </Badge>
+              {score > 0 && (
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 400 }}
+                >
+                  <Badge 
+                    variant={score >= 80 ? "default" : score >= 60 ? "secondary" : "outline"}
+                    className={cn(
+                      "text-xs font-medium",
+                      score >= 80 && "bg-green-50 text-green-700 border-green-200 hover:bg-green-100",
+                      score >= 60 && score < 80 && "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                    )}
+                  >
+                    {Math.round(score)}% ai match
+                  </Badge>
+                </motion.div>
+              )}
+            </div>
           </div>
-        </div>
 
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-700 transition-colors duration-200">
@@ -83,67 +96,87 @@ function JobCard({ job, index }: JobCardProps) {
           <p className="text-gray-600 font-medium">{job.company.name}</p>
         </div>
 
-        <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 flex-wrap">
-          <span className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            </svg>
-            {job.location}
-          </span>
-          <span className={`capitalize px-3 py-1.5 rounded-lg text-xs font-medium border ${
-            job.location_type === "remote" ? "bg-green-50 text-green-700 border-green-200" :
-            job.location_type === "hybrid" ? "bg-blue-50 text-blue-700 border-blue-200" :
-            "bg-purple-50 text-purple-700 border-purple-200"
-          }`}>
-            {job.location_type}
-          </span>
-          {job.salary_min && (
-            <span className="text-green-600 font-medium bg-green-50 px-3 py-1.5 rounded-lg border border-green-200">
-              {formatSalaryRange(job.salary_min, job.salary_max)}
-            </span>
-          )}
-        </div>
-
-        {job.required_skills && job.required_skills.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {job.required_skills.slice(0, 3).map((skill, skillIndex) => (
-              <motion.span
-                key={skill}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + skillIndex * 0.1, type: "spring", stiffness: 300 }}
-                className={`px-3 py-1.5 text-xs rounded-lg font-medium transition-all ${
-                  USER_SKILLS.includes(skill)
-                    ? "bg-blue-50 text-blue-700 border border-blue-200 shadow-sm"
-                    : "bg-gray-50 text-gray-600 border border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                {skill}
-              </motion.span>
-            ))}
-            {job.required_skills.length > 3 && (
-              <span className="px-3 py-1.5 text-xs rounded-lg bg-gray-50 text-gray-500 border border-gray-200">
-                +{job.required_skills.length - 3} more
-              </span>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 flex-wrap">
+            <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+              <MapPin className="w-4 h-4 text-gray-400" />
+              <span>{job.location}</span>
+            </div>
+            <Badge 
+              variant="outline"
+              className={cn(
+                "capitalize text-xs font-medium",
+                job.location_type === "remote" && "bg-green-50 text-green-700 border-green-200",
+                job.location_type === "hybrid" && "bg-blue-50 text-blue-700 border-blue-200",
+                job.location_type === "onsite" && "bg-purple-50 text-purple-700 border-purple-200"
+              )}
+            >
+              {job.location_type}
+            </Badge>
+            {job.salary_min && (
+              <div className="flex items-center gap-1 text-green-600 font-medium bg-green-50 px-3 py-1.5 rounded-lg border border-green-200">
+                <DollarSign className="w-4 h-4" />
+                <span>{formatSalaryRange(job.salary_min || null, job.salary_max || null)}</span>
+              </div>
             )}
           </div>
-        )}
 
-        <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-          <div className="text-xs text-gray-400">{formatRelativeTime(job.posted_date)}</div>
-          <motion.a
-            href={job.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-all duration-200 shadow-sm hover:shadow-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Apply
-          </motion.a>
-        </div>
-      </div>
+          {job.required_skills && job.required_skills.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {job.required_skills.slice(0, 3).map((skill, skillIndex) => (
+                <motion.div
+                  key={skill}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4 + skillIndex * 0.1, type: "spring", stiffness: 300 }}
+                >
+                  <Badge
+                    variant={USER_SKILLS.includes(skill) ? "default" : "outline"}
+                    className={cn(
+                      "text-xs font-medium transition-all",
+                      USER_SKILLS.includes(skill) 
+                        ? "bg-blue-50 text-blue-700 border-blue-200 shadow-sm hover:bg-blue-100"
+                        : "bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300"
+                    )}
+                  >
+                    {skill}
+                  </Badge>
+                </motion.div>
+              ))}
+              {job.required_skills.length > 3 && (
+                <Badge variant="outline" className="text-xs bg-gray-50 text-gray-500">
+                  +{job.required_skills.length - 3} more
+                </Badge>
+              )}
+            </div>
+          )}
+
+          <div className="flex justify-between items-center pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-1 text-xs text-gray-400">
+              <Clock className="w-3 h-3" />
+              <span>{formatRelativeTime(job.posted_date)}</span>
+            </div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                asChild
+                size="sm"
+                className="shadow-sm hover:shadow-md"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <a
+                  href={job.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Apply
+                </a>
+              </Button>
+            </motion.div>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }
@@ -374,7 +407,7 @@ function JobModal({ job, onClose }: { job: Job | null; onClose: () => void }) {
                   <div className="flex justify-between">
                     <span className="font-medium text-gray-700">Salary:</span>
                     <span className="text-green-600 font-medium">
-                      {formatSalaryRange(job.salary_min, job.salary_max)}
+                      {formatSalaryRange(job.salary_min || null, job.salary_max || null)}
                     </span>
                   </div>
                 )}
@@ -556,45 +589,54 @@ export default function MinimalistDashboard() {
               Discover opportunities that match your skills and preferences with intelligent job matching and real-time market insights.
             </motion.p>
 
-            {/* Enhanced Search Bar */}
+            {/* Enhanced Search Bar with shadcn/ui */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
               className="max-w-2xl mx-auto mb-8"
             >
-              <form onSubmit={handleSearch} className="flex gap-3 p-3 bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-xl">
-                <div className="flex-1 relative">
-                  <svg className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <input
-                    type="text"
-                    placeholder="Search jobs, companies, or skills..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500/20 rounded-xl bg-transparent text-lg"
-                  />
-                </div>
-                <select
-                  value={selectedLocation}
-                  onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-white/90 backdrop-blur-sm"
-                >
-                  <option value="">All Locations</option>
-                  <option value="remote">Remote</option>
-                  <option value="hybrid">Hybrid</option>
-                  <option value="onsite">On-site</option>
-                </select>
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="submit"
-                  className="px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-medium rounded-xl hover:from-gray-800 hover:to-gray-700 transition-all duration-200 shadow-lg"
-                >
-                  Search
-                </motion.button>
-              </form>
+              <Card className="bg-white/80 backdrop-blur-md border border-gray-200 shadow-xl">
+                <CardContent className="p-3">
+                  <form onSubmit={handleSearch} className="flex gap-3">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Search jobs, companies, or skills..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-12 py-4 border-0 focus:ring-2 focus:ring-blue-500/20 bg-transparent text-lg shadow-none"
+                      />
+                    </div>
+                    <Select
+                      value={selectedLocation}
+                      onValueChange={(value) => setSelectedLocation(value)}
+                    >
+                      <SelectTrigger className="w-40 py-4 bg-white/90 backdrop-blur-sm">
+                        <SelectValue placeholder="All Locations" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Locations</SelectItem>
+                        <SelectItem value="remote">Remote</SelectItem>
+                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                        <SelectItem value="onsite">On-site</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button 
+                        type="submit"
+                        size="lg"
+                        className="px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 shadow-lg"
+                      >
+                        Search
+                      </Button>
+                    </motion.div>
+                  </form>
+                </CardContent>
+              </Card>
               
               <motion.div 
                 initial={{ opacity: 0 }}
@@ -604,17 +646,22 @@ export default function MinimalistDashboard() {
               >
                 <span className="font-medium">Popular:</span>
                 {["Python Developer", "Full Stack", "React Engineer"].map((term, index) => (
-                  <motion.button
+                  <motion.div
                     key={term}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1 + index * 0.1 }}
                     whileHover={{ scale: 1.05 }}
-                    onClick={() => handlePopularSearch(term)}
-                    className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:underline underline-offset-4"
                   >
-                    {term}
-                  </motion.button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handlePopularSearch(term)}
+                      className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 hover:underline underline-offset-4 px-2 py-1 h-auto"
+                    >
+                      {term}
+                    </Button>
+                  </motion.div>
                 ))}
               </motion.div>
             </motion.div>

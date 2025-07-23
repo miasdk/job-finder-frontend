@@ -1,149 +1,59 @@
-import { type ClassValue, clsx } from 'clsx';
-import { formatDistanceToNow, format } from 'date-fns';
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs);
+  return twMerge(clsx(inputs))
 }
 
-export function formatCurrency(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-export function formatSalaryRange(min?: number, max?: number, currency = 'USD'): string {
+// Application-specific utility functions
+export function formatSalaryRange(min: number | null, max: number | null): string {
   if (!min && !max) return 'Salary not specified';
-  if (min && max) return `${formatCurrency(min, currency)} - ${formatCurrency(max, currency)}`;
-  if (min) return `From ${formatCurrency(min, currency)}`;
-  if (max) return `Up to ${formatCurrency(max, currency)}`;
-  return 'Salary not specified';
+  if (!max || min === max) return `$${min?.toLocaleString()}`;
+  return `$${min?.toLocaleString()} - $${max?.toLocaleString()}`;
 }
 
-export function formatDate(date: string | Date): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return format(dateObj, 'MMM d, yyyy');
-}
-
-export function formatRelativeTime(date: string | Date): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return formatDistanceToNow(dateObj, { addSuffix: true });
-}
-
-export function getScoreColor(score: number): string {
-  if (score >= 80) return 'score-badge-high';
-  if (score >= 60) return 'score-badge-medium';
-  return 'score-badge-low';
-}
-
-export function getScoreLabel(score: number): string {
-  if (score >= 80) return 'Excellent Match';
-  if (score >= 70) return 'Good Match';
-  if (score >= 60) return 'Fair Match';
-  return 'Low Match';
-}
-
-export function getExperienceLevelLabel(level: string): string {
-  const labels = {
-    entry: 'Entry Level',
-    junior: 'Junior',
-    mid: 'Mid Level',
-    senior: 'Senior',
-    manager: 'Manager',
-  };
-  return labels[level as keyof typeof labels] || level;
-}
-
-export function getLocationTypeLabel(type: string): string {
-  const labels = {
-    remote: 'Remote',
-    hybrid: 'Hybrid',
-    onsite: 'On-site',
-  };
-  return labels[type as keyof typeof labels] || type;
-}
-
-export function getLocationTypeColor(type: string): string {
-  const colors = {
-    remote: 'bg-green-100 text-green-800',
-    hybrid: 'bg-yellow-100 text-yellow-800',
-    onsite: 'bg-blue-100 text-blue-800',
-  };
-  return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-}
-
-export function truncateText(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength).trim() + '...';
-}
-
-export function highlightText(text: string, query: string): string {
-  if (!query) return text;
+export function formatRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInMs = now.getTime() - date.getTime();
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   
-  const regex = new RegExp(`(${query})`, 'gi');
-  return text.replace(regex, '<mark class="bg-yellow-200">$1</mark>');
+  if (diffInDays === 0) return 'Today';
+  if (diffInDays === 1) return 'Yesterday';
+  if (diffInDays < 7) return `${diffInDays} days ago`;
+  if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
+  if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
+  return `${Math.floor(diffInDays / 365)} years ago`;
 }
 
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
-  
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-}
-
-export function getSkillBadgeVariant(skill: string, userSkills: string[] = []): string {
-  if (userSkills.includes(skill)) {
-    return 'bg-blue-100 text-blue-800 border-blue-200';
-  }
-  return 'bg-gray-100 text-gray-700 border-gray-200';
-}
-
-export function calculateMatchPercentage(jobSkills: string[], userSkills: string[] = []): number {
-  if (!jobSkills.length) return 0;
-  
-  const matchingSkills = jobSkills.filter(skill => 
-    userSkills.some(userSkill => 
-      userSkill.toLowerCase() === skill.toLowerCase()
-    )
-  );
-  
-  return Math.round((matchingSkills.length / jobSkills.length) * 100);
-}
-
-// User skills from profile - this would come from a config or user preferences
+// User skills for highlighting matches
 export const USER_SKILLS = [
-  'Python',
-  'Django',
-  'Django REST Framework',
-  'PostgreSQL',
-  'React',
-  'Next.js',
-  'TypeScript',
-  'JavaScript',
-  'Node.js',
-  'Express',
-  'HTML',
-  'CSS',
-  'TailwindCSS',
-  'AWS',
-  'Docker',
-  'Git',
-  'CI/CD',
-  'Jest',
-  'OAuth',
-  'Pandas',
-  'NumPy',
-  'Flask',
-  'Celery',
-  'Redis',
-  'Firebase',
-  'SQL',
-  'MongoDB',
+  'JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Django',
+  'SQL', 'PostgreSQL', 'MongoDB', 'Docker', 'AWS', 'Git', 'HTML', 'CSS',
+  'TailwindCSS', 'Next.js', 'Express', 'REST APIs', 'GraphQL', 'Redux',
+  'Vue.js', 'Angular', 'Java', 'Spring Boot', 'Kubernetes', 'Redis',
+  'Elasticsearch', 'Machine Learning', 'Data Analysis', 'DevOps'
 ];
+
+// Additional utility for job-related functionality
+export function getJobTypeColor(type: string): string {
+  switch (type.toLowerCase()) {
+    case 'full_time': return 'bg-green-100 text-green-800';
+    case 'part_time': return 'bg-blue-100 text-blue-800';
+    case 'contract': return 'bg-orange-100 text-orange-800';
+    case 'internship': return 'bg-purple-100 text-purple-800';
+    case 'remote': return 'bg-teal-100 text-teal-800';
+    default: return 'bg-gray-100 text-gray-800';
+  }
+}
+
+export function getExperienceLevelColor(level: string): string {
+  switch (level.toLowerCase()) {
+    case 'entry': return 'bg-green-100 text-green-800';
+    case 'junior': return 'bg-blue-100 text-blue-800';
+    case 'mid': return 'bg-orange-100 text-orange-800';
+    case 'senior': return 'bg-red-100 text-red-800';
+    case 'lead': return 'bg-purple-100 text-purple-800';
+    default: return 'bg-gray-100 text-gray-800';
+  }
+}

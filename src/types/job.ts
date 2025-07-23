@@ -115,8 +115,10 @@ export interface JobFilters {
   location?: string;
   experience_level?: string;
   min_score?: number;
+  min_salary?: string;
   location_type?: string;
-  sort?: 'score' | 'date' | 'company';
+  source?: string;
+  sort?: 'score' | 'date' | 'company' | '-posted_date' | '-salary_max' | 'title';
   filter?: 'recommended' | 'meets_requirements';
   page?: number;
   page_size?: number;
