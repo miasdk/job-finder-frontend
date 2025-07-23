@@ -69,9 +69,9 @@ function JobCard({ job, index }: JobCardProps) {
                   score >= 60 ? "bg-blue-50 text-blue-700 border-blue-200" : 
                   "bg-gray-50 text-gray-600 border-gray-200"
                 }`}
-              >
-                {Math.round(score)}% match
-              </motion.div>
+                                >
+                    {Math.round(score)}% ai match
+                  </motion.div>
             )}
           </div>
         </div>
