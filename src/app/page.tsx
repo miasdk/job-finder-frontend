@@ -409,7 +409,10 @@ export default function Dashboard() {
             {/* Skills Intelligence */}
             {stats.skills_intelligence && (
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">🧠 Skills Intelligence</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">🧠 Skills Intelligence</h3>
+                  <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">Based on current job sources</span>
+                </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Market Demand */}
                   <div>
