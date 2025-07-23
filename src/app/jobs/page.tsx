@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Suspense, useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Job, JobFilters } from '@/types/job';
@@ -319,148 +319,151 @@ export default function JobsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="mb-8">
-          <div className="mb-4">
-            <h1 className="text-3xl font-light text-gray-900">All Jobs</h1>
-          </div>
-          {/* Enhanced Search and Filters */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6 shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {/* Search Input */}
-              <div className="md:col-span-2">
-                <div className="relative">
-                  <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <input
-                    type="text"
-                    placeholder="Search by job title, company, or skills..."
-                    value={search}
-                    onChange={handleSearchChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+    <Suspense fallback={<div className="text-center py-12">Loading...</div>}>
+      {/* Begin jobs page content */}
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <div className="mb-8">
+            <div className="mb-4">
+              <h1 className="text-3xl font-light text-gray-900">All Jobs</h1>
+            </div>
+            {/* Enhanced Search and Filters */}
+            <div className="bg-white rounded-lg p-6 border border-gray-200 mb-6 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Search Input */}
+                <div className="md:col-span-2">
+                  <div className="relative">
+                    <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                      type="text"
+                      placeholder="Search by job title, company, or skills..."
+                      value={search}
+                      onChange={handleSearchChange}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                {/* Location Type Filter */}
+                <div>
+                  <select
+                    value={filters.location_type || ''}
+                    onChange={e => handleFilterChange('location_type', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="">All Locations</option>
+                    <option value="remote">Remote</option>
+                    <option value="hybrid">Hybrid</option>
+                    <option value="onsite">On-site</option>
+                  </select>
+                </div>
+                {/* Experience Level Filter */}
+                <div>
+                  <select
+                    value={filters.experience_level || ''}
+                    onChange={e => handleFilterChange('experience_level', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="">All Levels</option>
+                    <option value="entry">Entry Level</option>
+                    <option value="junior">Junior</option>
+                    <option value="mid">Mid Level</option>
+                    <option value="senior">Senior</option>
+                    <option value="lead">Lead/Principal</option>
+                  </select>
                 </div>
               </div>
-              {/* Location Type Filter */}
-              <div>
-                <select
-                  value={filters.location_type || ''}
-                  onChange={e => handleFilterChange('location_type', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                >
-                  <option value="">All Locations</option>
-                  <option value="remote">Remote</option>
-                  <option value="hybrid">Hybrid</option>
-                  <option value="onsite">On-site</option>
-                </select>
+              {/* Additional Filters Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                {/* Min Score Filter */}
+                <div>
+                  <select
+                    value={filters.min_score || ''}
+                    onChange={e => handleFilterChange('min_score', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="">Min Score</option>
+                    <option value="50">50+</option>
+                    <option value="60">60+</option>
+                    <option value="70">70+</option>
+                    <option value="80">80+</option>
+                    <option value="90">90+</option>
+                  </select>
+                </div>
+                {/* Location Filter */}
+                <div>
+                  <input
+                    type="text"
+                    value={filters.location || ''}
+                    onChange={e => handleFilterChange('location', e.target.value)}
+                    placeholder="Location (e.g. New York)"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  />
+                </div>
+                {/* Sort By */}
+                <div>
+                  <select
+                    value={filters.sort || 'score'}
+                    onChange={e => handleFilterChange('sort', e.target.value as 'score' | 'date' | 'company')}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="score">Best Match</option>
+                    <option value="date">Most Recent</option>
+                    <option value="company">Company</option>
+                  </select>
+                </div>
               </div>
-              {/* Experience Level Filter */}
-              <div>
-                <select
-                  value={filters.experience_level || ''}
-                  onChange={e => handleFilterChange('experience_level', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                >
-                  <option value="">All Levels</option>
-                  <option value="entry">Entry Level</option>
-                  <option value="junior">Junior</option>
-                  <option value="mid">Mid Level</option>
-                  <option value="senior">Senior</option>
-                  <option value="lead">Lead/Principal</option>
-                </select>
+              {/* Results Summary */}
+              <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+                <span>{jobs.length} jobs found</span>
+                {(search || filters.location_type || filters.experience_level || filters.min_score || filters.location) && (
+                  <button
+                    onClick={() => {
+                      setSearch('');
+                      setFilters({});
+                      updateUrlParams('', {});
+                    }}
+                    className="text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Clear all filters
+                  </button>
+                )}
               </div>
             </div>
-            {/* Additional Filters Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-              {/* Min Score Filter */}
-              <div>
-                <select
-                  value={filters.min_score || ''}
-                  onChange={e => handleFilterChange('min_score', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                >
-                  <option value="">Min Score</option>
-                  <option value="50">50+</option>
-                  <option value="60">60+</option>
-                  <option value="70">70+</option>
-                  <option value="80">80+</option>
-                  <option value="90">90+</option>
-                </select>
-              </div>
-              {/* Location Filter */}
-              <div>
-                <input
-                  type="text"
-                  value={filters.location || ''}
-                  onChange={e => handleFilterChange('location', e.target.value)}
-                  placeholder="Location (e.g. New York)"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-900 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading jobs...</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {jobs.map((job) => (
+                <JobCard 
+                  key={job.id} 
+                  job={job} 
+                  onClick={setSelectedJob}
                 />
-              </div>
-              {/* Sort By */}
-              <div>
-                <select
-                  value={filters.sort || 'score'}
-                  onChange={e => handleFilterChange('sort', e.target.value as 'score' | 'date' | 'company')}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                >
-                  <option value="score">Best Match</option>
-                  <option value="date">Most Recent</option>
-                  <option value="company">Company</option>
-                </select>
-              </div>
-            </div>
-            {/* Results Summary */}
-            <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
-              <span>{jobs.length} jobs found</span>
-              {(search || filters.location_type || filters.experience_level || filters.min_score || filters.location) && (
-                <button
-                  onClick={() => {
-                    setSearch('');
-                    setFilters({});
-                    updateUrlParams('', {});
-                  }}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Clear all filters
-                </button>
+              ))}
+              
+              {jobs.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">No jobs found matching your criteria.</p>
+                </div>
               )}
             </div>
-          </div>
+          )}
+
+          {selectedJob && (
+            <JobDetail 
+              job={selectedJob} 
+              onClose={() => setSelectedJob(null)} 
+            />
+          )}
         </div>
-
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading jobs...</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {jobs.map((job) => (
-              <JobCard 
-                key={job.id} 
-                job={job} 
-                onClick={setSelectedJob}
-              />
-            ))}
-            
-            {jobs.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500">No jobs found matching your criteria.</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {selectedJob && (
-          <JobDetail 
-            job={selectedJob} 
-            onClose={() => setSelectedJob(null)} 
-          />
-        )}
       </div>
-    </div>
+    </Suspense>
   );
 }
