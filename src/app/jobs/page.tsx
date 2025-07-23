@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Job, JobFilters } from '@/types/job';
@@ -216,7 +216,7 @@ export default function JobsPage() {
   const [filters, setFilters] = useState<JobFilters>({});
   const [initialized, setInitialized] = useState(false);
 
-  const allowedSorts = ['score', 'date', 'company'];
+  const allowedSorts = useMemo(() => ['score', 'date', 'company'], []);
 
   // Initialize from URL parameters
   useEffect(() => {
@@ -403,7 +403,7 @@ export default function JobsPage() {
               <div>
                 <select
                   value={filters.sort || 'score'}
-                  onChange={e => handleFilterChange('sort', e.target.value as any)}
+                  onChange={e => handleFilterChange('sort', e.target.value as 'score' | 'date' | 'company')}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
                   <option value="score">Best Match</option>
