@@ -10,7 +10,7 @@ export default function ProfilePage() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-8">
           <div className="mb-4">
             <h1 className="text-3xl font-light text-gray-900">Profile</h1>

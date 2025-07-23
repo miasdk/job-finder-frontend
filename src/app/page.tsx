@@ -555,7 +555,7 @@ export default function MinimalistDashboard() {
       {/* Subtle background pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent_70%)] pointer-events-none" />
       
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         {/* Enhanced Hero Section */}
         <motion.section 
           initial={{ opacity: 0, y: 30 }}

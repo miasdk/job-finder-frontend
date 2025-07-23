@@ -34,16 +34,9 @@ interface JobCardProps {
 function JobCard({ job, onClick, index }: JobCardProps) {
   const score = job.score?.total_score || 0;
   
-  // Source icon mapping
-  const getSourceIcon = (source: string) => {
-    switch (source) {
-      case 'JSearch': return '🔍';
-      case 'Adzuna': return '⭐';
-      case 'RemoteOK': return '🌐';
-      case 'Python.org': return '🐍';
-      case 'Wellfound': return '🚀';
-      default: return '💼';
-    }
+  // Source labels without emojis
+  const getSourceLabel = (source: string) => {
+    return source; // Just return the source name directly
   };
 
   return (
@@ -70,7 +63,7 @@ function JobCard({ job, onClick, index }: JobCardProps) {
             </div>
             <div className="flex flex-col items-end gap-2 ml-4">
               <Badge variant="secondary" className="text-xs">
-                {getSourceIcon(job.source)} {job.source}
+                {getSourceLabel(job.source)}
               </Badge>
               {score > 0 && (
                 <Badge 
@@ -369,7 +362,7 @@ export default function JobsClient() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -387,7 +380,7 @@ export default function JobsClient() {
         >
           <Card className="mb-8">
             <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
                 {/* Search Input */}
                 <div className="md:col-span-2 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -408,13 +401,13 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="📍 All Locations" />
+                    <SelectValue placeholder="All Locations" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Locations</SelectItem>
-                    <SelectItem value="remote">🏠 Remote</SelectItem>
-                    <SelectItem value="hybrid">🏢 Hybrid</SelectItem>
-                    <SelectItem value="onsite">🏙️ On-site</SelectItem>
+                    <SelectItem value="remote">Remote</SelectItem>
+                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                    <SelectItem value="onsite">On-site</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -427,21 +420,21 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="💼 All Levels" />
+                    <SelectValue placeholder="All Levels" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Levels</SelectItem>
-                    <SelectItem value="entry">🌱 Entry Level</SelectItem>
-                    <SelectItem value="junior">👨‍💻 Junior</SelectItem>
-                    <SelectItem value="mid">🚀 Mid Level</SelectItem>
-                    <SelectItem value="senior">⭐ Senior</SelectItem>
-                    <SelectItem value="lead">👑 Lead/Principal</SelectItem>
+                    <SelectItem value="entry">Entry Level</SelectItem>
+                    <SelectItem value="junior">Junior</SelectItem>
+                    <SelectItem value="mid">Mid Level</SelectItem>
+                    <SelectItem value="senior">Senior</SelectItem>
+                    <SelectItem value="lead">Lead/Principal</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Additional Filters Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Salary Range */}
                 <Select
                   value={filters.min_salary || 'all'}
@@ -451,7 +444,7 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="💰 Min Salary" />
+                    <SelectValue placeholder="Min Salary" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Any Salary</SelectItem>
@@ -472,15 +465,15 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="🔗 All Sources" />
+                    <SelectValue placeholder="All Sources" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Sources</SelectItem>
-                    <SelectItem value="JSearch">🔍 JSearch</SelectItem>
-                    <SelectItem value="Adzuna">⭐ Adzuna</SelectItem>
-                    <SelectItem value="RemoteOK">🌐 RemoteOK</SelectItem>
-                    <SelectItem value="Python.org">🐍 Python.org</SelectItem>
-                    <SelectItem value="Wellfound">🚀 Wellfound</SelectItem>
+                    <SelectItem value="JSearch">JSearch</SelectItem>
+                    <SelectItem value="Adzuna">Adzuna</SelectItem>
+                    <SelectItem value="RemoteOK">RemoteOK</SelectItem>
+                    <SelectItem value="Python.org">Python.org</SelectItem>
+                    <SelectItem value="Wellfound">Wellfound</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -493,13 +486,13 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="🎯 Best Match" />
+                    <SelectValue placeholder="Best Match" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="score">🎯 Best Match</SelectItem>
-                    <SelectItem value="-posted_date">📅 Most Recent</SelectItem>
-                    <SelectItem value="-salary_max">💵 Highest Salary</SelectItem>
-                    <SelectItem value="title">🔤 Title A-Z</SelectItem>
+                    <SelectItem value="score">Best Match</SelectItem>
+                    <SelectItem value="-posted_date">Most Recent</SelectItem>
+                    <SelectItem value="-salary_max">Highest Salary</SelectItem>
+                    <SelectItem value="title">Title A-Z</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
