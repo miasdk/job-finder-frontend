@@ -12,19 +12,19 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   
   return (
-    <header className="backdrop-blur-md bg-white/70 shadow-lg sticky top-0 z-30 transition-shadow">
+    <header className="backdrop-blur-md bg-white/70 border-b border-gray-200 sticky top-0 z-30 transition-shadow">
       <div className="max-w-5xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-4 text-2xl font-semibold text-gray-900 hover:text-gray-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900">
             <Image
               src="/images/my-notion-face-transparent (2).png"
               alt="myJobFinder logo"
-              width={56}
-              height={56}
+              width={60}
+              height={60}
               priority
-              className="rounded-full bg-white shadow-md border border-gray-100"
+              className="rounded-full"
             />
-            <span className="tracking-tight font-bold text-gray-900">myJobFinder</span>
+            <span className="tracking-tight text-gray-900">myJobFinder.ai</span>
           </Link>
           {/* Hamburger button for mobile */}
           <button
