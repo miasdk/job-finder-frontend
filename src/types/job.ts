@@ -60,6 +60,41 @@ export interface EmailDigest {
   was_sent_successfully: boolean;
 }
 
+export interface SkillIntelligence {
+  top_market_skills: { skill: string; count: number }[];
+  your_skills_demand: { skill: string; market_demand: number }[];
+  recommendation: string;
+}
+
+export interface SalaryIntelligence {
+  your_min: number;
+  your_max: number;
+  market_avg: number;
+  market_median: number;
+  above_market: boolean;
+}
+
+export interface LocationIntelligence {
+  location: string;
+  job_count: number;
+  avg_score: number;
+  is_preferred: boolean;
+}
+
+export interface AIEngineStatus {
+  jobs_scored_today: number;
+  avg_match_score: number;
+  high_matches: number;
+  search_terms_used: string[];
+  active_scrapers: string[];
+}
+
+export interface SmartCompanyAlert {
+  company: string;
+  high_match_jobs: number;
+  avg_match: number;
+}
+
 export interface DashboardStats {
   total_jobs: number;
   recommended_jobs: number;
@@ -68,6 +103,11 @@ export interface DashboardStats {
   last_email_date: string | null;
   top_jobs: Job[];
   recent_jobs: Job[];
+  skills_intelligence: SkillIntelligence;
+  salary_intelligence: SalaryIntelligence | null;
+  location_intelligence: LocationIntelligence[];
+  ai_engine_status: AIEngineStatus;
+  smart_company_alerts: SmartCompanyAlert[];
 }
 
 export interface JobFilters {
