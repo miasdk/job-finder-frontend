@@ -317,9 +317,12 @@ export default function JobsPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="mb-8">
-          <div className="mb-4">
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
             <h1 className="text-3xl font-light text-gray-900">All Jobs</h1>
           </div>
+          {jobs.length > 0 && (
+            <div className="text-sm text-gray-500 mb-2">{jobs.length} jobs found</div>
+          )}
           {/* Active filter chips */}
           {activeFilterChips.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -423,30 +426,32 @@ export default function JobsPage() {
           </div>
         )}
         {/* Pagination controls below job grid */}
-        <div className="flex justify-center items-center gap-2 mt-10">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          {[...Array(totalPages)].map((_, i) => (
+        <div className="w-full flex justify-center mt-10">
+          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap max-w-full px-2 sm:max-w-xs md:max-w-md lg:max-w-lg">
             <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`px-3 py-1 rounded ${page === i + 1 ? 'bg-gray-900 text-white' : 'border border-gray-300 bg-white hover:bg-gray-100'}`}
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+              className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50"
             >
-              {i + 1}
+              Previous
             </button>
-          ))}
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-            className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50"
-          >
-            Next
-          </button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                className={`px-3 py-1 rounded min-w-[40px] ${page === i + 1 ? 'bg-gray-900 text-white' : 'border border-gray-300 bg-white hover:bg-gray-100'}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+              className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
         {selectedJob && (
           <JobDetail 
