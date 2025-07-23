@@ -455,7 +455,7 @@ export default function MinimalistDashboard() {
   const JOBS_PER_PAGE = 8;
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("all");
 
   useEffect(() => {
     async function loadData() {
@@ -494,7 +494,7 @@ export default function MinimalistDashboard() {
     if (searchQuery.trim()) {
       params.set("search", searchQuery.trim());
     }
-    if (selectedLocation && selectedLocation !== "") {
+    if (selectedLocation && selectedLocation !== "all") {
       params.set("location_type", selectedLocation);
     }
     router.push(`/jobs?${params.toString()}`);
@@ -616,7 +616,7 @@ export default function MinimalistDashboard() {
                         <SelectValue placeholder="All Locations" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Locations</SelectItem>
+                        <SelectItem value="all">All Locations</SelectItem>
                         <SelectItem value="remote">Remote</SelectItem>
                         <SelectItem value="hybrid">Hybrid</SelectItem>
                         <SelectItem value="onsite">On-site</SelectItem>

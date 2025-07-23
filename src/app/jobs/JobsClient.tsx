@@ -401,17 +401,17 @@ export default function JobsClient() {
 
                 {/* Location Filter */}
                 <Select
-                  value={filters.location_type || ''}
+                  value={filters.location_type || 'all'}
                   onValueChange={(value) => setFilters(prev => ({ 
                     ...prev, 
-                    location_type: value || undefined 
+                    location_type: value === 'all' ? undefined : value 
                   }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="📍 All Locations" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Locations</SelectItem>
+                    <SelectItem value="all">All Locations</SelectItem>
                     <SelectItem value="remote">🏠 Remote</SelectItem>
                     <SelectItem value="hybrid">🏢 Hybrid</SelectItem>
                     <SelectItem value="onsite">🏙️ On-site</SelectItem>
@@ -420,17 +420,17 @@ export default function JobsClient() {
 
                 {/* Experience Level Filter */}
                 <Select
-                  value={filters.experience_level || ''}
+                  value={filters.experience_level || 'all'}
                   onValueChange={(value) => setFilters(prev => ({ 
                     ...prev, 
-                    experience_level: value || undefined 
+                    experience_level: value === 'all' ? undefined : value 
                   }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="💼 All Levels" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Levels</SelectItem>
+                    <SelectItem value="all">All Levels</SelectItem>
                     <SelectItem value="entry">🌱 Entry Level</SelectItem>
                     <SelectItem value="junior">👨‍💻 Junior</SelectItem>
                     <SelectItem value="mid">🚀 Mid Level</SelectItem>
@@ -444,17 +444,17 @@ export default function JobsClient() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Salary Range */}
                 <Select
-                  value={filters.min_salary || ''}
+                  value={filters.min_salary || 'all'}
                   onValueChange={(value) => setFilters(prev => ({ 
                     ...prev, 
-                    min_salary: value || undefined 
+                    min_salary: value === 'all' ? undefined : value 
                   }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="💰 Min Salary" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Any Salary</SelectItem>
+                    <SelectItem value="all">Any Salary</SelectItem>
                     <SelectItem value="50000">$50K+</SelectItem>
                     <SelectItem value="75000">$75K+</SelectItem>
                     <SelectItem value="100000">$100K+</SelectItem>
@@ -465,17 +465,17 @@ export default function JobsClient() {
 
                 {/* Job Source */}
                 <Select
-                  value={filters.source || ''}
+                  value={filters.source || 'all'}
                   onValueChange={(value) => setFilters(prev => ({ 
                     ...prev, 
-                    source: value || undefined 
+                    source: value === 'all' ? undefined : value 
                   }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="🔗 All Sources" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Sources</SelectItem>
+                    <SelectItem value="all">All Sources</SelectItem>
                     <SelectItem value="JSearch">🔍 JSearch</SelectItem>
                     <SelectItem value="Adzuna">⭐ Adzuna</SelectItem>
                     <SelectItem value="RemoteOK">🌐 RemoteOK</SelectItem>
