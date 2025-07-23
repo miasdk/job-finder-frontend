@@ -12,19 +12,19 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   
   return (
-    <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-30 transition-shadow">
-      <div className="max-w-4xl mx-auto px-6 py-3">
+    <header className="backdrop-blur-md bg-white/70 shadow-lg sticky top-0 z-30 transition-shadow">
+      <div className="max-w-5xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 text-xl font-light text-gray-900 hover:text-gray-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900">
+          <Link href="/" className="flex items-center gap-4 text-2xl font-semibold text-gray-900 hover:text-gray-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900">
             <Image
               src="/images/my-notion-face-transparent (2).png"
               alt="myJobFinder.ai logo"
               width={56}
               height={56}
               priority
-              className="rounded-full bg-white shadow-sm"
+              className="rounded-full bg-white shadow-md border border-gray-100"
             />
-            <span className="tracking-tight">myJobFinder.ai</span>
+            <span className="tracking-tight font-bold text-gray-900">myJobFinder.ai</span>
           </Link>
           {/* Hamburger button for mobile */}
           <button
@@ -35,7 +35,7 @@ export default function Header() {
           >
             <span className="sr-only">Toggle navigation</span>
             <svg
-              className="h-6 w-6 text-gray-900"
+              className="h-7 w-7 text-gray-900"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -50,30 +50,30 @@ export default function Header() {
             </svg>
           </button>
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-2 bg-white/60 backdrop-blur-md rounded-full px-4 py-2 shadow border border-gray-100">
             <Link 
               href="/" 
-              className={`text-sm transition-colors px-1 pb-0.5 border-b-2 ${
-                isActive('/') ? 'text-gray-900 font-medium border-gray-900' : 'text-gray-600 hover:text-gray-900 border-transparent hover:border-gray-300'
-              } focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900`}
+              className={`text-sm px-4 py-2 rounded-full transition-all duration-150 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 ${
+                isActive('/') ? 'bg-gray-900 text-white scale-105 shadow' : 'text-gray-700 hover:bg-gray-100 hover:scale-105'
+              }`}
               aria-current={isActive('/') ? 'page' : undefined}
             >
               Dashboard
             </Link>
             <Link 
               href="/jobs" 
-              className={`text-sm transition-colors px-1 pb-0.5 border-b-2 ${
-                isActive('/jobs') ? 'text-gray-900 font-medium border-gray-900' : 'text-gray-600 hover:text-gray-900 border-transparent hover:border-gray-300'
-              } focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900`}
+              className={`text-sm px-4 py-2 rounded-full transition-all duration-150 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 ${
+                isActive('/jobs') ? 'bg-gray-900 text-white scale-105 shadow' : 'text-gray-700 hover:bg-gray-100 hover:scale-105'
+              }`}
               aria-current={isActive('/jobs') ? 'page' : undefined}
             >
               All Jobs
             </Link>
             <Link 
               href="/profile" 
-              className={`text-sm transition-colors px-1 pb-0.5 border-b-2 ${
-                isActive('/profile') ? 'text-gray-900 font-medium border-gray-900' : 'text-gray-600 hover:text-gray-900 border-transparent hover:border-gray-300'
-              } focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900`}
+              className={`text-sm px-4 py-2 rounded-full transition-all duration-150 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 ${
+                isActive('/profile') ? 'bg-gray-900 text-white scale-105 shadow' : 'text-gray-700 hover:bg-gray-100 hover:scale-105'
+              }`}
               aria-current={isActive('/profile') ? 'page' : undefined}
             >
               Profile
@@ -83,12 +83,12 @@ export default function Header() {
         {/* Mobile nav menu */}
         {menuOpen && (
           <nav className="md:hidden mt-3 animate-fade-in">
-            <ul className="flex flex-col gap-2 bg-white rounded-lg border border-gray-100 shadow p-4">
+            <ul className="flex flex-col gap-2 bg-white/90 rounded-2xl border border-gray-100 shadow p-4">
               <li>
                 <Link
                   href="/"
-                  className={`block text-base transition-colors px-1 py-2 rounded ${
-                    isActive('/') ? 'text-gray-900 font-medium bg-gray-100' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  className={`block text-base transition-colors px-1 py-2 rounded-full ${
+                    isActive('/') ? 'bg-gray-900 text-white font-semibold' : 'text-gray-700 hover:bg-gray-100'
                   } focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900`}
                   aria-current={isActive('/') ? 'page' : undefined}
                   onClick={() => setMenuOpen(false)}
@@ -99,8 +99,8 @@ export default function Header() {
               <li>
                 <Link
                   href="/jobs"
-                  className={`block text-base transition-colors px-1 py-2 rounded ${
-                    isActive('/jobs') ? 'text-gray-900 font-medium bg-gray-100' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  className={`block text-base transition-colors px-1 py-2 rounded-full ${
+                    isActive('/jobs') ? 'bg-gray-900 text-white font-semibold' : 'text-gray-700 hover:bg-gray-100'
                   } focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900`}
                   aria-current={isActive('/jobs') ? 'page' : undefined}
                   onClick={() => setMenuOpen(false)}
@@ -111,8 +111,8 @@ export default function Header() {
               <li>
                 <Link
                   href="/profile"
-                  className={`block text-base transition-colors px-1 py-2 rounded ${
-                    isActive('/profile') ? 'text-gray-900 font-medium bg-gray-100' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  className={`block text-base transition-colors px-1 py-2 rounded-full ${
+                    isActive('/profile') ? 'bg-gray-900 text-white font-semibold' : 'text-gray-700 hover:bg-gray-100'
                   } focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900`}
                   aria-current={isActive('/profile') ? 'page' : undefined}
                   onClick={() => setMenuOpen(false)}
