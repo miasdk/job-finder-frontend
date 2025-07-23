@@ -410,7 +410,7 @@ export default function Dashboard() {
             {stats.skills_intelligence && (
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">🧠 Skills Intelligence</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Skills Intelligence</h3>
                   <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">Based on current job sources</span>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -463,7 +463,7 @@ export default function Dashboard() {
               {/* Salary Intelligence */}
               {stats.salary_intelligence && (
                 <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">💰 Salary Intelligence</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Intelligence</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600">Your Range:</span>
@@ -494,7 +494,7 @@ export default function Dashboard() {
               {/* Location Intelligence */}
               {stats.location_intelligence && stats.location_intelligence.length > 0 && (
                 <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📍 Location Intelligence</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Location Intelligence</h3>
                   <div className="space-y-3">
                     {stats.location_intelligence.slice(0, 4).map((location) => (
                       <div key={location.location} className="flex items-center justify-between">
@@ -520,7 +520,7 @@ export default function Dashboard() {
               {/* AI Engine Status */}
               {stats.ai_engine_status && (
                 <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🤖 AI Engine Status</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">AI Engine Status</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600">Jobs Analyzed Today:</span>
@@ -557,7 +557,7 @@ export default function Dashboard() {
               {/* Smart Company Alerts */}
               {stats.smart_company_alerts && stats.smart_company_alerts.length > 0 && (
                 <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 Smart Company Alerts</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Smart Company Alerts</h3>
                   <div className="space-y-3">
                     {stats.smart_company_alerts.slice(0, 4).map((alert) => (
                       <div key={alert.company} className="flex items-center justify-between">
