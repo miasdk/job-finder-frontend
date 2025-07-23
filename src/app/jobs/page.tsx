@@ -204,6 +204,7 @@ function JobDetail({ job, onClose }: { job: Job; onClose: () => void }) {
 export default function JobsPage() {
   const searchParams = useSearchParams();
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobsCount, setJobsCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -246,6 +247,7 @@ export default function JobsPage() {
         page_size: 12,
       });
       setJobs(response.results);
+      setJobsCount(response.count || 0);
       setTotalPages(Math.ceil((response.count || 0) / 12));
       setError(null);
     } catch (error) {
@@ -320,8 +322,8 @@ export default function JobsPage() {
           <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
             <h1 className="text-3xl font-light text-gray-900">All Jobs</h1>
           </div>
-          {jobs.length > 0 && (
-            <div className="text-sm text-gray-500 mb-2">{jobs.length} jobs found</div>
+          {jobsCount > 0 && (
+            <div className="text-sm text-gray-500 mb-2">{jobsCount} jobs found</div>
           )}
           {/* Active filter chips */}
           {activeFilterChips.length > 0 && (
