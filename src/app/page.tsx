@@ -381,24 +381,24 @@ export default function Dashboard() {
 
         {/* Job Intelligence Dashboard */}
         {stats && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100 mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">AI Job Intelligence</h2>
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 border border-blue-100 mb-12 flex flex-col items-center">
+            <div className="flex flex-col md:flex-row md:items-center w-full mb-8 gap-4 md:gap-0">
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">AI Job Intelligence</h2>
                 <p className="text-gray-600 text-sm">Personalized insights from our AI</p>
               </div>
-              <span className="ml-auto text-xs text-gray-500 bg-white/70 rounded-full px-3 py-1 border border-gray-200">
+              <span className="text-xs text-gray-500 bg-white/70 rounded-full px-3 py-1 border border-gray-200">
                 Last updated: {stats.last_scrape_date ? formatRelativeTime(stats.last_scrape_date) : 'Live'}
               </span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 w-full mb-6">
               {/* Jobs Matched */}
-              <div className="bg-white/80 rounded-lg p-4 border border-white/50 flex flex-col items-center">
+              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
                 <div className="text-3xl font-bold text-blue-600 mb-1">{stats.recommended_jobs ?? stats.total_jobs}</div>
                 <div className="text-xs text-gray-500">Jobs Matched</div>
               </div>
-              {/* Avg. Match Score */}
-              <div className="bg-white/80 rounded-lg p-4 border border-white/50 flex flex-col items-center">
+              {/* Top Match Score */}
+              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
                 <div className="text-3xl font-bold text-green-600 mb-1">
                   {stats.top_jobs && stats.top_jobs.length > 0
                     ? `${Math.round(stats.top_jobs[0].score?.total_score ?? 0)}%`
@@ -407,7 +407,7 @@ export default function Dashboard() {
                 <div className="text-xs text-gray-500">Top Match Score</div>
               </div>
               {/* Top Skills */}
-              <div className="bg-white/80 rounded-lg p-4 border border-white/50 flex flex-col items-center">
+              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
                 <div className="text-base font-semibold text-gray-900 mb-1">
                   {stats.top_jobs && stats.top_jobs.length > 0 && stats.top_jobs[0].required_skills
                     ? stats.top_jobs[0].required_skills.slice(0, 2).join(', ')
@@ -416,7 +416,7 @@ export default function Dashboard() {
                 <div className="text-xs text-gray-500">Top Skills</div>
               </div>
               {/* Top Company */}
-              <div className="bg-white/80 rounded-lg p-4 border border-white/50 flex flex-col items-center">
+              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
                 <div className="text-base font-semibold text-gray-900 mb-1">
                   {stats.top_jobs && stats.top_jobs.length > 0
                     ? stats.top_jobs[0].company.name
@@ -427,12 +427,19 @@ export default function Dashboard() {
             </div>
             {/* Recommended Action */}
             {stats.top_jobs && stats.top_jobs.length > 0 && (stats.top_jobs[0].score?.total_score ?? 0) < 60 && (
-              <div className="mt-6 text-center">
+              <div className="mt-2 mb-4 text-center w-full">
                 <span className="inline-block bg-yellow-50 text-yellow-800 text-xs rounded-full px-3 py-1 border border-yellow-200">
                   Tip: Add more skills or update your profile to improve your match rate!
                 </span>
               </div>
             )}
+            {/* Call to Action */}
+            <a
+              href="/jobs"
+              className="mt-4 inline-block px-8 py-3 bg-gray-900 text-white text-base font-medium rounded-lg shadow hover:bg-gray-700 transition"
+            >
+              View All Jobs
+            </a>
           </div>
         )}
 
