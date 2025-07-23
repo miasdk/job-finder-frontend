@@ -237,7 +237,7 @@ export default function JobsPage() {
       
       setInitialized(true);
     }
-  }, [searchParams, initialized]);
+  }, [searchParams, initialized, allowedSorts]);
 
   const loadJobs = useCallback(async () => {
     if (!initialized) return; // Wait for initialization
@@ -251,9 +251,12 @@ export default function JobsPage() {
       });
       setJobs(response.results);
       setError(null);
-    } catch (error) {
-      console.error('Failed to load jobs:', error);
-      setError('Failed to load jobs. Please check that the Django server is running.');
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'message' in error && typeof (error as { message?: string }).message === 'string') {
+        setError((error as { message: string }).message);
+      } else {
+        setError('Failed to load jobs');
+      }
     } finally {
       setLoading(false);
     }
