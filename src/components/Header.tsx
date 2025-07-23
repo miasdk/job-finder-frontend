@@ -18,13 +18,13 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-4 text-2xl font-semibold text-gray-900 hover:text-gray-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900">
             <Image
               src="/images/my-notion-face-transparent (2).png"
-              alt="Mia logo"
+              alt="myJobFinder logo"
               width={56}
               height={56}
               priority
               className="rounded-full bg-white shadow-md border border-gray-100"
             />
-            <span className="tracking-tight font-bold text-gray-900">Mia</span>
+            <span className="tracking-tight font-bold text-gray-900">myJobFinder</span>
           </Link>
           {/* Hamburger button for mobile */}
           <button
