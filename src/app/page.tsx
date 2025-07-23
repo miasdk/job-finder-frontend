@@ -332,10 +332,10 @@ export default function Dashboard() {
                     onChange={(e) => setSelectedLocation(e.target.value)}
                     className="px-4 py-4 rounded-xl border-0 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                   >
-                    <option value="">📍 All Locations</option>
-                    <option value="remote">🏠 Remote</option>
-                    <option value="hybrid">🏢 Hybrid</option>
-                    <option value="onsite">🏙️ On-site</option>
+                    <option value="">All Locations</option>
+                    <option value="remote">Remote</option>
+                    <option value="hybrid">Hybrid</option>
+                    <option value="onsite">On-site</option>
                   </select>
                   <button 
                     type="submit"
@@ -387,15 +387,23 @@ export default function Dashboard() {
               <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">AI Job Intelligence</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">{stats.recommended_jobs}</div>
-                  <div className="text-sm text-gray-600">AI Recommended</div>
-                </div>
+                <button
+                  onClick={() => router.push('/jobs?filter=recommended')}
+                  className="text-center p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
+                >
+                  <div className="text-3xl font-bold text-blue-600 mb-2 group-hover:text-blue-700">{stats.recommended_jobs}</div>
+                  <div className="text-sm text-gray-600 group-hover:text-blue-700">AI Recommended</div>
+                  <div className="text-xs text-gray-400 mt-1 group-hover:text-blue-500">Click to view →</div>
+                </button>
                 
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600 mb-2">{stats.meets_minimum}</div>
-                  <div className="text-sm text-gray-600">Meet Requirements</div>
-                </div>
+                <button
+                  onClick={() => router.push('/jobs?filter=meets_requirements')}
+                  className="text-center p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all group"
+                >
+                  <div className="text-3xl font-bold text-green-600 mb-2 group-hover:text-green-700">{stats.meets_minimum}</div>
+                  <div className="text-sm text-gray-600 group-hover:text-green-700">Meet Requirements</div>
+                  <div className="text-xs text-gray-400 mt-1 group-hover:text-green-500">Click to view →</div>
+                </button>
                 
                 <div className="text-center">
                   <div className="text-sm font-semibold text-purple-600 mb-2">Last Updated</div>
