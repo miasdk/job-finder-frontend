@@ -218,12 +218,14 @@ export default function JobsClient() {
   useEffect(() => {
     if (!initialized) {
       const urlSearch = searchParams.get('search');
+      const urlLocation = searchParams.get('location');
       const urlLocationType = searchParams.get('location_type');
       const urlExperienceLevel = searchParams.get('experience_level');
       const urlMinScore = searchParams.get('min_score');
       const urlSort = searchParams.get('sort');
       if (urlSearch) setSearch(urlSearch);
       const initialFilters: JobFilters = {};
+      if (urlLocation) initialFilters.location = urlLocation;
       if (urlLocationType) initialFilters.location_type = urlLocationType;
       if (urlExperienceLevel) initialFilters.experience_level = urlExperienceLevel;
       if (urlMinScore) initialFilters.min_score = Number(urlMinScore);
@@ -264,6 +266,7 @@ export default function JobsClient() {
   function updateUrlParams(newSearch: string, newFilters: JobFilters) {
     const params = new URLSearchParams();
     if (newSearch) params.set('search', newSearch);
+    if (newFilters.location) params.set('location', newFilters.location);
     if (newFilters.location_type) params.set('location_type', newFilters.location_type);
     if (newFilters.experience_level) params.set('experience_level', newFilters.experience_level);
     if (newFilters.min_score !== undefined) params.set('min_score', String(newFilters.min_score));
@@ -293,6 +296,7 @@ export default function JobsClient() {
 
   // Filter chips
   const activeFilterChips = [
+    filters.location && { label: `📍 ${filters.location}`, key: 'location' },
     filters.location_type && { label: filters.location_type, key: 'location_type' },
     filters.experience_level && { label: filters.experience_level, key: 'experience_level' },
     filters.min_score && { label: `Score ${filters.min_score}+`, key: 'min_score' },
@@ -325,6 +329,24 @@ export default function JobsClient() {
           {jobsCount > 0 && (
             <div className="text-sm text-gray-500 mb-2">{jobsCount} jobs found</div>
           )}
+          {/* Quick Location Filters */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="text-sm text-gray-600 font-medium py-1">Quick filters:</span>
+            {['New York City', 'Manhattan', 'Brooklyn', 'Remote'].map((location) => (
+              <button
+                key={location}
+                onClick={() => handleFilterChange('location', location)}
+                className={`px-3 py-1 text-sm rounded-full border transition ${
+                  filters.location === location
+                    ? 'bg-blue-100 text-blue-700 border-blue-200'
+                    : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                📍 {location}
+              </button>
+            ))}
+          </div>
+
           {/* Active filter chips */}
           {activeFilterChips.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
@@ -358,6 +380,13 @@ export default function JobsClient() {
               onChange={handleSearchChange}
               placeholder="Search by job title, company, or skills..."
               className="w-full md:w-64 pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <input
+              type="text"
+              value={filters.location || ''}
+              onChange={e => handleFilterChange('location', e.target.value)}
+              placeholder="City or location (e.g., New York City)"
+              className="w-full md:w-48 pl-4 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <select
               value={filters.location_type || ''}
