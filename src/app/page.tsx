@@ -745,7 +745,7 @@ export default function MinimalistDashboard() {
                               delay={0.3 + index * 0.1}
                             />
                             <span className="text-sm text-gray-600 min-w-[2.5rem] text-right font-medium">
-                              {skill.count}
+                              {skill.count} jobs
                             </span>
                           </div>
                         </motion.div>
@@ -882,10 +882,10 @@ export default function MinimalistDashboard() {
                               </div>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <div className="font-bold text-gray-900">{location.job_count}</div>
-                            <div className="text-xs text-gray-500">{location.avg_score}% avg match</div>
-                          </div>
+                                                     <div className="text-right">
+                             <div className="font-bold text-gray-900">{location.job_count} jobs</div>
+                             <div className="text-xs text-gray-500">{location.avg_score}% avg ai match</div>
+                           </div>
                         </motion.div>
                       ))}
                     </div>
