@@ -379,67 +379,206 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Job Intelligence Dashboard */}
+        {/* Enhanced AI Intelligence Dashboard */}
         {stats && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 border border-blue-100 mb-12 flex flex-col items-center">
-            <div className="flex flex-col md:flex-row md:items-center w-full mb-8 gap-4 md:gap-0">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900 mb-1">AI Job Intelligence</h2>
-                <p className="text-gray-600 text-sm">Personalized insights from our AI</p>
-              </div>
-              <span className="text-xs text-gray-500 bg-white/70 rounded-full px-3 py-1 border border-gray-200">
-                Last updated: {stats.last_scrape_date ? formatRelativeTime(stats.last_scrape_date) : 'Live'}
-              </span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 w-full mb-6">
-              {/* Jobs Matched */}
-              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
-                <div className="text-3xl font-bold text-blue-600 mb-1">{stats.recommended_jobs ?? stats.total_jobs}</div>
-                <div className="text-xs text-gray-500">Jobs Matched</div>
-              </div>
-              {/* Top Match Score */}
-              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
-                <div className="text-3xl font-bold text-green-600 mb-1">
-                  {stats.top_jobs && stats.top_jobs.length > 0
-                    ? `${Math.round(stats.top_jobs[0].score?.total_score ?? 0)}%`
-                    : '--'}
+          <div className="space-y-8 mb-12">
+            {/* Main Stats Overview */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">AI Job Intelligence</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">{stats.recommended_jobs}</div>
+                  <div className="text-sm text-gray-600">AI Recommended</div>
                 </div>
-                <div className="text-xs text-gray-500">Top Match Score</div>
-              </div>
-              {/* Top Skills */}
-              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
-                <div className="text-base font-semibold text-gray-900 mb-1">
-                  {stats.top_jobs && stats.top_jobs.length > 0 && stats.top_jobs[0].required_skills
-                    ? stats.top_jobs[0].required_skills.slice(0, 2).join(', ')
-                    : '--'}
+                
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600 mb-2">{stats.meets_minimum}</div>
+                  <div className="text-sm text-gray-600">Meet Requirements</div>
                 </div>
-                <div className="text-xs text-gray-500">Top Skills</div>
-              </div>
-              {/* Top Company */}
-              <div className="flex flex-col items-center bg-white/90 rounded-lg p-6 border border-white/50">
-                <div className="text-base font-semibold text-gray-900 mb-1">
-                  {stats.top_jobs && stats.top_jobs.length > 0
-                    ? stats.top_jobs[0].company.name
-                    : '--'}
+                
+                <div className="text-center">
+                  <div className="text-sm font-semibold text-purple-600 mb-2">Last Updated</div>
+                  <div className="text-xs text-gray-500">
+                    {stats.last_scrape_date ? formatRelativeTime(stats.last_scrape_date) : 'Never'}
+                  </div>
                 </div>
-                <div className="text-xs text-gray-500">Top Company</div>
               </div>
             </div>
-            {/* Recommended Action */}
-            {stats.top_jobs && stats.top_jobs.length > 0 && (stats.top_jobs[0].score?.total_score ?? 0) < 60 && (
-              <div className="mt-2 mb-4 text-center w-full">
-                <span className="inline-block bg-yellow-50 text-yellow-800 text-xs rounded-full px-3 py-1 border border-yellow-200">
-                  Tip: Add more skills or update your profile to improve your match rate!
-                </span>
+
+            {/* Skills Intelligence */}
+            {stats.skills_intelligence && (
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">🧠 Skills Intelligence</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Market Demand */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">Top Skills in Demand</h4>
+                    <div className="space-y-2">
+                      {stats.skills_intelligence.top_market_skills.slice(0, 5).map((skill) => (
+                        <div key={skill.skill} className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">{skill.skill}</span>
+                          <div className="flex items-center">
+                            <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                              <div 
+                                className="bg-blue-500 h-2 rounded-full" 
+                                style={{width: `${Math.min((skill.count / stats.skills_intelligence.top_market_skills[0].count) * 100, 100)}%`}}
+                              ></div>
+                            </div>
+                            <span className="text-xs text-gray-500">{skill.count}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Your Skills Demand */}
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">Your Skills vs Market</h4>
+                    <div className="space-y-2">
+                      {stats.skills_intelligence.your_skills_demand.slice(0, 5).map((skill) => (
+                        <div key={skill.skill} className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">{skill.skill}</span>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            skill.market_demand > 10 ? 'bg-green-100 text-green-700' :
+                            skill.market_demand > 5 ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-gray-100 text-gray-600'
+                          }`}>
+                            {skill.market_demand > 10 ? 'High Demand' :
+                             skill.market_demand > 5 ? 'Medium' : 'Low'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
+
+            {/* Salary & Location Intelligence */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Salary Intelligence */}
+              {stats.salary_intelligence && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">💰 Salary Intelligence</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Your Range:</span>
+                      <span className="text-sm font-medium">${stats.salary_intelligence.your_min.toLocaleString()} - ${stats.salary_intelligence.your_max.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Market Average:</span>
+                      <span className="text-sm font-medium">${stats.salary_intelligence.market_avg.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Market Median:</span>
+                      <span className="text-sm font-medium">${stats.salary_intelligence.market_median.toLocaleString()}</span>
+                    </div>
+                    <div className={`text-xs px-3 py-2 rounded-full text-center ${
+                      stats.salary_intelligence.above_market 
+                        ? 'bg-blue-100 text-blue-700' 
+                        : 'bg-green-100 text-green-700'
+                    }`}>
+                      {stats.salary_intelligence.above_market 
+                        ? 'Your expectations are above market average' 
+                        : 'Your range aligns well with market rates'
+                      }
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Location Intelligence */}
+              {stats.location_intelligence && stats.location_intelligence.length > 0 && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📍 Location Intelligence</h3>
+                  <div className="space-y-3">
+                    {stats.location_intelligence.slice(0, 4).map((location) => (
+                      <div key={location.location} className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <span className="text-sm text-gray-600">{location.location}</span>
+                          {location.is_preferred && (
+                            <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Preferred</span>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-medium">{location.job_count} jobs</div>
+                          <div className="text-xs text-gray-500">Avg: {location.avg_score}% match</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* AI Engine Status & Smart Alerts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* AI Engine Status */}
+              {stats.ai_engine_status && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🤖 AI Engine Status</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Jobs Analyzed Today:</span>
+                      <span className="text-sm font-medium">{stats.ai_engine_status.jobs_scored_today}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Avg Match Score:</span>
+                      <span className="text-sm font-medium">{stats.ai_engine_status.avg_match_score}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">High Matches (80%+):</span>
+                      <span className="text-sm font-medium text-green-600">{stats.ai_engine_status.high_matches}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Active Search Terms:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {stats.ai_engine_status.search_terms_used.map((term) => (
+                          <span key={term} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{term}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Active Sources:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {stats.ai_engine_status.active_scrapers.slice(0, 3).map((scraper) => (
+                          <span key={scraper} className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">{scraper}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Smart Company Alerts */}
+              {stats.smart_company_alerts && stats.smart_company_alerts.length > 0 && (
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 Smart Company Alerts</h3>
+                  <div className="space-y-3">
+                    {stats.smart_company_alerts.slice(0, 4).map((alert) => (
+                      <div key={alert.company} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">{alert.company}</span>
+                        <div className="text-right">
+                          <div className="text-sm font-medium">{alert.high_match_jobs} matches</div>
+                          <div className="text-xs text-green-600">{alert.avg_match}% avg</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Call to Action */}
-            <a
-              href="/jobs"
-              className="mt-4 inline-block px-8 py-3 bg-gray-900 text-white text-base font-medium rounded-lg shadow hover:bg-gray-700 transition"
-            >
-              View All Jobs
-            </a>
+            <div className="text-center">
+              <a
+                href="/jobs"
+                className="inline-block px-8 py-3 bg-gray-900 text-white text-base font-medium rounded-lg shadow hover:bg-gray-700 transition"
+              >
+                View All Jobs
+              </a>
+            </div>
           </div>
         )}
 
