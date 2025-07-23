@@ -296,7 +296,7 @@ export default function Dashboard() {
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl blur-3xl opacity-80" />
           
           {/* Main Hero Content */}
-          <div className="relative bg-white/60 backdrop-blur-sm rounded-2xl p-8">
+          <div className="relative backdrop-blur-sm rounded-2xl p-8">
             <div className="mb-6">
               
               <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
