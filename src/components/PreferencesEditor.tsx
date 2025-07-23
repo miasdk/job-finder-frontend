@@ -43,7 +43,7 @@ export default function PreferencesEditor({ onSave }: PreferencesEditorProps) {
       
       const response = await api.updatePreferences(preferences);
       setPreferences(response.preferences);
-      setSuccess('Preferences updated successfully!');
+      setSuccess('Preferences updated and job scores recalculated! Changes will be visible in your job search results.');
       
       if (onSave) {
         onSave(response.preferences);
@@ -362,7 +362,7 @@ export default function PreferencesEditor({ onSave }: PreferencesEditorProps) {
           disabled={saving}
           className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {saving ? 'Saving...' : 'Save Preferences'}
+          {saving ? 'Saving & Rescoring Jobs...' : 'Save Preferences'}
         </button>
       </div>
     </div>
