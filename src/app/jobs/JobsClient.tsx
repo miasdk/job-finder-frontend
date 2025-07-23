@@ -380,9 +380,9 @@ export default function JobsClient() {
         >
           <Card className="mb-8">
             <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6">
-                {/* Search Input */}
-                <div className="md:col-span-2 relative">
+              {/* Search Bar - Full Width */}
+              <div className="mb-4">
+                <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder="Search jobs, companies, or skills..."
@@ -391,7 +391,10 @@ export default function JobsClient() {
                     className="pl-10"
                   />
                 </div>
+              </div>
 
+              {/* All Filters - Consistent Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                 {/* Location Filter */}
                 <Select
                   value={filters.location_type || 'all'}
@@ -401,7 +404,7 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="All Locations" />
+                    <SelectValue placeholder="Location" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Locations</SelectItem>
@@ -420,7 +423,7 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="All Levels" />
+                    <SelectValue placeholder="Experience" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Levels</SelectItem>
@@ -431,10 +434,6 @@ export default function JobsClient() {
                     <SelectItem value="lead">Lead/Principal</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-
-              {/* Additional Filters Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {/* Salary Range */}
                 <Select
                   value={filters.min_salary || 'all'}
@@ -444,7 +443,7 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Min Salary" />
+                    <SelectValue placeholder="Salary" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Any Salary</SelectItem>
@@ -465,7 +464,7 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="All Sources" />
+                    <SelectValue placeholder="Source" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Sources</SelectItem>
@@ -486,7 +485,7 @@ export default function JobsClient() {
                   }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Best Match" />
+                    <SelectValue placeholder="Sort" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="score">Best Match</SelectItem>
