@@ -17,61 +17,45 @@ interface JobCardProps {
 
 function JobCard({ job, onClick }: JobCardProps) {
   const score = job.score?.total_score || 0;
-  
   return (
-    <div 
-      className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors cursor-pointer relative"
+    <div
+      className="flex flex-col justify-between h-full bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer group"
       onClick={() => onClick?.(job)}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-medium text-gray-900 hover:text-gray-700">
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-700 truncate" title={job.title}>
             {job.title}
           </h3>
-          <p className="text-sm text-gray-500 mt-1">{job.company.name}</p>
-        </div>
-        <div className="flex items-center gap-3">
           {score > 0 && (
-            <div className={`text-sm font-medium px-2 py-1 rounded ${
-              score >= 70 ? 'bg-green-100 text-green-700' : 
-              score >= 50 ? 'bg-blue-100 text-blue-700' : 
+            <span className={`text-xs font-semibold px-2 py-1 rounded-full ml-2 ${
+              score >= 70 ? 'bg-green-100 text-green-700' :
+              score >= 50 ? 'bg-blue-100 text-blue-700' :
               'bg-gray-100 text-gray-600'
             }`}>
               {Math.round(score)}%
-            </div>
+            </span>
           )}
-          <a
-            href={job.source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1 bg-gray-900 text-white text-sm rounded hover:bg-gray-800 transition-colors"
-            onClick={e => e.stopPropagation()}
-          >
-            Apply
-          </a>
         </div>
-      </div>
-      
-      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-        <span>{job.location}</span>
-        <span>•</span>
-        <span className="capitalize">{job.location_type}</span>
-        {job.salary_min && (
-          <>
-            <span>•</span>
-            <span>{formatSalaryRange(job.salary_min, job.salary_max)}</span>
-          </>
-        )}
-        <span>•</span>
-        <span>{formatRelativeTime(job.posted_date)}</span>
-      </div>
-
-      {job.required_skills && job.required_skills.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {job.required_skills.slice(0, 5).map((skill) => (
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm text-gray-600 font-medium truncate" title={job.company.name}>{job.company.name}</span>
+          <span className="text-xs text-gray-400">•</span>
+          <span className="text-sm text-gray-500 capitalize">{job.location_type}</span>
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm text-gray-500 truncate" title={job.location}>{job.location}</span>
+          {job.salary_min && (
+            <>
+              <span className="text-xs text-gray-400">•</span>
+              <span className="text-sm text-gray-500">{formatSalaryRange(job.salary_min, job.salary_max)}</span>
+            </>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-1 mb-3">
+          {job.required_skills && job.required_skills.slice(0, 4).map((skill) => (
             <span
               key={skill}
-              className={`px-2 py-1 text-xs rounded border ${
+              className={`px-2 py-0.5 text-xs rounded border ${
                 USER_SKILLS.includes(skill)
                   ? 'bg-blue-50 text-blue-700 border-blue-200'
                   : 'bg-gray-50 text-gray-600 border-gray-200'
@@ -80,13 +64,25 @@ function JobCard({ job, onClick }: JobCardProps) {
               {skill}
             </span>
           ))}
-          {job.required_skills.length > 5 && (
-            <span className="px-2 py-1 text-xs rounded border bg-gray-50 text-gray-500 border-gray-200">
-              +{job.required_skills.length - 5}
+          {job.required_skills && job.required_skills.length > 4 && (
+            <span className="px-2 py-0.5 text-xs rounded border bg-gray-50 text-gray-500 border-gray-200">
+              +{job.required_skills.length - 4}
             </span>
           )}
         </div>
-      )}
+      </div>
+      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
+        <span className="text-xs text-gray-400">{formatRelativeTime(job.posted_date)}</span>
+        <a
+          href={job.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-1.5 bg-gray-900 text-white text-xs font-semibold rounded-lg shadow hover:bg-gray-700 transition-colors ml-2"
+          onClick={e => e.stopPropagation()}
+        >
+          Apply
+        </a>
+      </div>
     </div>
   );
 }
