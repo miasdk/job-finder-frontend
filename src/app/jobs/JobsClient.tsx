@@ -329,24 +329,6 @@ export default function JobsClient() {
           {jobsCount > 0 && (
             <div className="text-sm text-gray-500 mb-2">{jobsCount} jobs found</div>
           )}
-          {/* Quick Location Filters */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="text-sm text-gray-600 font-medium py-1">Quick filters:</span>
-            {['New York City', 'Manhattan', 'Brooklyn', 'Remote'].map((location) => (
-              <button
-                key={location}
-                onClick={() => handleFilterChange('location', location)}
-                className={`px-3 py-1 text-sm rounded-full border transition ${
-                  filters.location === location
-                    ? 'bg-blue-100 text-blue-700 border-blue-200'
-                    : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                📍 {location}
-              </button>
-            ))}
-          </div>
-
           {/* Active filter chips */}
           {activeFilterChips.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
