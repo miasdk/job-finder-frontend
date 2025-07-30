@@ -288,6 +288,10 @@ export default function JobsClient() {
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<JobFilters>({});
   const [initialized, setInitialized] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrev, setHasPrev] = useState(false);
 
   // Initialize from URL parameters
   useEffect(() => {
@@ -314,7 +318,7 @@ export default function JobsClient() {
     }
   }, [searchParams, initialized]);
 
-  const loadJobs = useCallback(async () => {
+  const loadJobs = useCallback(async (page: number = 1) => {
     if (!initialized) return;
     
     try {
@@ -322,9 +326,14 @@ export default function JobsClient() {
       const response = await api.getJobs({
         ...filters,
         search: search || undefined,
-        sort: 'score'
+        sort: 'score',
+        page
       });
       setJobs(response.results);
+      setTotalJobs(response.count);
+      setHasNext(!!response.next);
+      setHasPrev(!!response.previous);
+      setCurrentPage(page);
       setError(null);
     } catch (error) {
       console.error('Failed to load jobs:', error);
@@ -335,12 +344,28 @@ export default function JobsClient() {
   }, [filters, search, initialized]);
 
   useEffect(() => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+      loadJobs(1);
+    } else {
+      loadJobs();
+    }
+  }, [filters, search]);
+
+  useEffect(() => {
     loadJobs();
   }, [loadJobs]);
 
   const clearFilters = () => {
     setSearch('');
     setFilters({});
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    loadJobs(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const hasActiveFilters = search || Object.keys(filters).some(key => filters[key as keyof JobFilters]);
@@ -499,7 +524,13 @@ export default function JobsClient() {
               {/* Results Summary */}
               <div className="flex items-center justify-between mt-4 pt-4 border-t">
                 <span className="text-sm text-gray-600 font-medium">
-                  {jobs.length} jobs found
+                  {totalJobs > 0 ? (
+                    <>
+                      Showing {((currentPage - 1) * 20) + 1}-{Math.min(currentPage * 20, totalJobs)} of {totalJobs} jobs
+                    </>
+                  ) : (
+                    `${jobs.length} jobs found`
+                  )}
                 </span>
                 {hasActiveFilters && (
                   <Button 
@@ -554,6 +585,39 @@ export default function JobsClient() {
                 </Card>
               </motion.div>
             )}
+          </motion.div>
+        )}
+
+        {/* Pagination Controls */}
+        {!loading && totalJobs > 20 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center justify-center gap-2 mt-8"
+          >
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={!hasPrev}
+              className="gap-1"
+            >
+              ← Previous
+            </Button>
+            
+            <div className="flex items-center gap-2 mx-4">
+              <span className="text-sm text-gray-600">
+                Page {currentPage} of {Math.ceil(totalJobs / 20)}
+              </span>
+            </div>
+            
+            <Button
+              variant="outline"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={!hasNext}
+              className="gap-1"
+            >
+              Next →
+            </Button>
           </motion.div>
         )}
 
