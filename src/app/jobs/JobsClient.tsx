@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Building, Clock, DollarSign, X } from 'lucide-react';
+import { Search, MapPin, Building, Clock, DollarSign, X, RefreshCw } from 'lucide-react';
 
 import { api } from '@/lib/api';
 import { Job, JobFilters } from '@/types/job';
@@ -292,6 +292,7 @@ export default function JobsClient() {
   const [totalJobs, setTotalJobs] = useState(0);
   const [hasNext, setHasNext] = useState(false);
   const [hasPrev, setHasPrev] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Initialize from URL parameters
   useEffect(() => {
@@ -368,6 +369,37 @@ export default function JobsClient() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleRefreshJobs = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://job-finder-backend-5l5q.onrender.com'}/api/daily-refresh/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Job refresh result:', result);
+        
+        // Reload the jobs after refresh
+        await loadJobs(1);
+        setCurrentPage(1);
+        
+        // Show success message (you could add a toast notification here)
+        alert(`Job refresh completed! Added ${result.added_new_jobs || 0} new jobs.`);
+      } else {
+        throw new Error('Failed to refresh jobs');
+      }
+    } catch (error) {
+      console.error('Job refresh failed:', error);
+      alert('Failed to refresh jobs. Please try again.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const hasActiveFilters = search || Object.keys(filters).some(key => filters[key as keyof JobFilters]);
 
   if (error) {
@@ -393,8 +425,21 @@ export default function JobsClient() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">All Jobs</h1>
-          <p className="text-gray-600">Discover your next career opportunity</p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">All Jobs</h1>
+              <p className="text-gray-600">Discover your next career opportunity</p>
+            </div>
+            <Button
+              onClick={handleRefreshJobs}
+              disabled={isRefreshing}
+              variant="outline"
+              className="gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh Jobs'}
+            </Button>
+          </div>
         </motion.div>
         
         {/* Enhanced Search and Filters */}
