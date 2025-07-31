@@ -355,7 +355,31 @@ export default function JobsClient() {
 
   useEffect(() => {
     loadJobs();
+    
+    // Auto-refresh jobs if data is stale (older than 24 hours)
+    checkAndAutoRefresh();
   }, [loadJobs]);
+
+  const checkAndAutoRefresh = async () => {
+    try {
+      const dashboard = await api.getDashboardStats();
+      const lastUpdate = dashboard.last_scrape_date;
+      
+      if (lastUpdate) {
+        const lastUpdateTime = new Date(lastUpdate);
+        const now = new Date();
+        const hoursSinceUpdate = (now.getTime() - lastUpdateTime.getTime()) / (1000 * 60 * 60);
+        
+        // Auto-refresh if data is older than 24 hours
+        if (hoursSinceUpdate > 24) {
+          console.log('Data is stale, triggering auto-refresh...');
+          handleRefreshJobs();
+        }
+      }
+    } catch (error) {
+      console.log('Auto-refresh check failed:', error);
+    }
+  };
 
   const clearFilters = () => {
     setSearch('');
