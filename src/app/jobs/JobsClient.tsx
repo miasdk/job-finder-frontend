@@ -370,14 +370,36 @@ export default function JobsClient() {
         const now = new Date();
         const hoursSinceUpdate = (now.getTime() - lastUpdateTime.getTime()) / (1000 * 60 * 60);
         
-        // Auto-refresh if data is older than 24 hours
-        if (hoursSinceUpdate > 24) {
-          console.log('Data is stale, triggering auto-refresh...');
-          handleRefreshJobs();
+        // Only auto-refresh if data is older than 48 hours (less aggressive)
+        // and don't auto-refresh if we're already refreshing
+        if (hoursSinceUpdate > 48 && !isRefreshing) {
+          console.log(`Data is ${hoursSinceUpdate.toFixed(1)} hours old, checking if auto-refresh is needed...`);
+          
+          // Check localStorage to avoid refreshing too frequently
+          const lastAutoRefresh = localStorage.getItem('lastAutoRefresh');
+          const now = Date.now();
+          
+          if (!lastAutoRefresh || now - parseInt(lastAutoRefresh) > 86400000) { // 24 hours
+            console.log('Triggering auto-refresh...');
+            localStorage.setItem('lastAutoRefresh', now.toString());
+            
+            // Don't block the UI - refresh in background
+            handleRefreshJobs().catch(error => {
+              console.log('Background auto-refresh failed:', error);
+              // Don't show alert for background failures
+            });
+          } else {
+            console.log('Auto-refresh already done recently, skipping');
+          }
+        } else if (hoursSinceUpdate <= 48) {
+          console.log(`Data is ${hoursSinceUpdate.toFixed(1)} hours old - still fresh`);
         }
+      } else {
+        console.log('No last update time available, skipping auto-refresh');
       }
     } catch (error) {
       console.log('Auto-refresh check failed:', error);
+      // Don't throw or show errors for auto-refresh checks
     }
   };
 
@@ -396,29 +418,54 @@ export default function JobsClient() {
   const handleRefreshJobs = async () => {
     setIsRefreshing(true);
     try {
+      console.log('Starting job refresh...');
+      
+      // Create an AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minute timeout
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://job-finder-backend-5l5q.onrender.com'}/api/daily-refresh/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       
       if (response.ok) {
         const result = await response.json();
         console.log('Job refresh result:', result);
         
-        // Reload the jobs after refresh
-        await loadJobs(1);
-        setCurrentPage(1);
-        
-        // Show success message (you could add a toast notification here)
-        alert(`Job refresh completed! Added ${result.added_new_jobs || 0} new jobs.`);
+        if (result.success) {
+          // Reload the jobs after refresh
+          await loadJobs(1);
+          setCurrentPage(1);
+          
+          // Show success message
+          const newJobs = result.added_new_jobs || 0;
+          const message = result.message || `Job refresh completed! Added ${newJobs} new jobs.`;
+          alert(message);
+        } else {
+          throw new Error(result.error || 'Refresh failed');
+        }
       } else {
-        throw new Error('Failed to refresh jobs');
+        const errorText = await response.text();
+        console.error('Refresh failed with status:', response.status, errorText);
+        throw new Error(`Server error (${response.status}): ${response.statusText}`);
       }
     } catch (error) {
       console.error('Job refresh failed:', error);
-      alert('Failed to refresh jobs. Please try again.');
+      
+      if (error instanceof Error && error.name === 'AbortError') {
+        alert('Job refresh is taking longer than expected. It may still be running in the background. Please check back in a few minutes.');
+      } else if (error instanceof Error && error.message.includes('Failed to fetch')) {
+        alert('Network error: Unable to connect to the server. Please check your internet connection and try again.');
+      } else {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        alert(`Failed to refresh jobs: ${message}. Please try again.`);
+      }
     } finally {
       setIsRefreshing(false);
     }
