@@ -13,7 +13,7 @@ export default function Header() {
   
   return (
     <header className="backdrop-blur-md bg-white/70 border-b border-gray-200 sticky top-0 z-30 transition-shadow">
-      <div className="max-w-5xl mx-auto px-6 py-4">
+      <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-4 text-2xl font-semibold text-gray-900 hover:text-gray-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-900">
             <Image
@@ -24,7 +24,7 @@ export default function Header() {
               priority
               className="rounded-full"
             />
-            <span className="tracking-tight text-gray-900">myJobFinder.ai</span>
+            <span className="tracking-tight text-gray-900">myJobFinder</span>
           </Link>
           {/* Hamburger button for mobile */}
           <button
